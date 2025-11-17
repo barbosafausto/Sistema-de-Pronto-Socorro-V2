@@ -20,13 +20,16 @@ struct no_fila{
 
 FILA *fila_criar(void){
     FILA *f = (FILA*)malloc(sizeof(FILA));
+
     if(f != NULL){
         f->frente = NULL;
+        f->contador = 0;
     }
     return f;
 } 
 
 NO *fila_criar_no(PACIENTE *p, char urgencia, uint ordem_chegada){
+    
     NO *novo = (NO*)malloc(sizeof(NO));
     if(novo != NULL){
         novo->p = p;
