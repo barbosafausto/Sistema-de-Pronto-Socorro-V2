@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 struct registro_ {
-  PACIENTE* raiz;
+  NO* raiz;
 };
 
 struct no_registro {
