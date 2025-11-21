@@ -1,6 +1,8 @@
 #include "registro.h"
 #include <stdlib.h>
 
+#define max(a, b) (a > b) ? a : b
+
 struct registro_ {
   NO* raiz;
 };
@@ -80,4 +82,50 @@ bool registro_apagar(REGISTRO** r){
   }
   
   return false;
+}
+
+int registro_altura_no(NO *A) {
+
+  if (!A) return -1;
+
+  return A->altura;
+}
+
+NO* registro_rodar_esquerda(NO* A) {
+
+  NO* B = A->dir;
+
+  A->dir = B->esq;
+  B->esq = A;
+
+  A->altura = max(registro_altura_no(A->esq), registro_altura_no(A->dir)) + 1;
+
+  return B;
+}
+
+NO* registro_rodar_direita(NO* A) {
+
+  NO *B = A->esq;
+
+  A->esq = B->dir;
+  B->dir = A;
+
+  A->altura = max(registro_altura_no(A->esq), registro_altura_no(A->dir)) + 1;
+  
+  return B;
+}
+
+NO* registro_rodar_esq_dir(NO* A) {
+
+
+  A->esq = registro_rodar_esquerda(A->esq);
+
+  return registro_rodar_direita(A);
+}
+
+NO* registro_rodar_dir_esq(NO* A) {
+
+  A->dir = registro_rodar_direita(A->dir);
+
+  return registro_rodar_esquerda(A);
 }
