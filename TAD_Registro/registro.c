@@ -1,7 +1,7 @@
 #include "registro.h"
 #include <stdlib.h>
 
-#define max(a, b) (a > b) ? a : b
+#define max(a, b) ((a > b) ? a : b)
 
 struct registro_ {
   NO* raiz;
