@@ -80,9 +80,26 @@ bool no_apagar(NO** n){
   return false;
 }
 
+NO* registro_apagar_no(NO* n){
+  
+  if(n != NULL){
+    
+    registro_apagar_no(n->esq);
+    registro_apagar_no(n->dir);
+
+    paciente_apagar(&(n->p));
+    
+    free(n);
+    n = NULL; //Para retornar NULL e o pai não ter mais acesso
+  }
+
+  return n;
+}
+
 bool registro_apagar(REGISTRO** r){
 
-  if (*r != NULL) {
+  if (r != NULL && *r != NULL) {
+    (*r)->raiz = registro_apagar_no((*r)->raiz);
     free(*r);
     *r = NULL;
     return true;
