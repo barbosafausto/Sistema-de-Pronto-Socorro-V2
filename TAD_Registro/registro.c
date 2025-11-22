@@ -196,9 +196,9 @@ NO* registro_inserir_no(NO* n, PACIENTE* p, bool esta_na_fila, char* verifica){
   return n;
 }
 
-char registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila){
+int_8 registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila){
   
-  char verifica = NAO_ESTA;
+  int_8 verifica = NAO_ESTA;
 
   if(r != NULL) r->raiz = registro_inserir_no(r->raiz, p, esta_na_fila, &verifica);
   
