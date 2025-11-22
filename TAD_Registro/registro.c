@@ -1,7 +1,14 @@
 #include "registro.h"
 #include <stdlib.h>
+#include <stdio.h>
 
-#define max(a, b) (a > b) ? a : b
+#define ESTA_FILA 2
+#define ESTA_REGISTRO 1
+#define NAO_ESTA 0
+
+#define max(a, b) ((a > b) ? a : b) //Parenteses para não atrapalhar a precedência
+
+typedef struct no_registro NO;
 
 struct registro_ {
   NO* raiz;
@@ -29,7 +36,7 @@ REGISTRO* registro_criar(void){
   
 }
 
-NO* no_criar(PACIENTE* p, bool esta_na_fila){
+NO* registro_criar_no(PACIENTE* p, bool esta_na_fila){
 
   NO *n = malloc(sizeof(NO));
   if (n == NULL) {
@@ -86,7 +93,7 @@ bool registro_apagar(REGISTRO** r){
 
 int registro_altura_no(NO *A) {
 
-  if (!A) return -1;
+  if (A == NULL) return -1;
 
   return A->altura;
 }
@@ -128,4 +135,89 @@ NO* registro_rodar_dir_esq(NO* A) {
   A->dir = registro_rodar_direita(A->dir);
 
   return registro_rodar_esquerda(A);
+}
+
+/*Calcula o Fator de Balanceamento do nó A*/
+int registro_calcular_fb(NO* A){
+  return (registro_altura_no(A->esq) - registro_altura_no(A->dir));
+}
+
+NO* registro_inserir_no(NO* n, PACIENTE* p, bool esta_na_fila, char* verifica){
+  
+  if(n == NULL){ //Chegou no fim da árvore
+    NO* novo = registro_criar_no(p, esta_na_fila); //Já inicializa a altura como 0
+    return novo;
+  }
+  
+  //Organizamos os dados na árvore de acordo com o id dos pacientes
+  if(paciente_get_id(n->p) < paciente_get_id(p)){ //Se id maior, insere-se na direita
+    n->dir = registro_inserir_no(n->dir, p, esta_na_fila, verifica);
+  }
+  else if(paciente_get_id(n->p) > paciente_get_id(p)){ //Se id menor, insere-se na esquerda
+    n->esq = registro_inserir_no(n->esq, p, esta_na_fila, verifica);
+  }
+  else{//Se tem o mesmo id, não deve ser inserido: ID É ÚNICO
+    if(n->esta_na_fila) (*verifica) = ESTA_FILA; //O nó também já está na fila
+    else (*verifica) = ESTA_REGISTRO;
+    return n; //Comça a voltar na recursão sem perder os ponteiros;
+  }
+  
+  n->altura = max(registro_altura_no(n->dir),registro_altura_no(n->esq))+1; //Atualizando altura
+
+  int fb = registro_calcular_fb(n); //Para verificação do balanceamento
+
+  if(fb >= 2){ //Está pendendo para esquerda
+
+    if(registro_calcular_fb(n->esq) < 0){ //E o filho esquerdo pendendo para a direita 
+      printf("Rotação esquerda-direita."); //Debug
+      n = registro_rodar_esq_dir(n);
+    }
+
+    else{
+      printf("Rotação direita."); //Debug
+      n = registro_rodar_direita(n);
+    }
+  }
+
+  else if(fb <= -2){ //Está pendendo para direita
+
+    if(registro_calcular_fb(n->dir) > 0){ //E o filho direito pendendo para a esquerda
+      printf("Rotação direita-esquerda."); //Debug
+      n = registro_rodar_dir_esq(n);
+    }
+
+    else{
+      printf("Rotação esquerda."); //Debug
+      n = registro_rodar_esquerda(n);
+    }
+  }
+  printf("\n");
+  
+  return n;
+}
+
+char registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila){
+  
+  char verifica = NAO_ESTA;
+
+  if(r != NULL) r->raiz = registro_inserir_no(r->raiz, p, esta_na_fila, &verifica);
+  
+  return verifica;
+
+}
+
+void registro_listar_no(NO* n){ //Percorre em ordem
+  if(n != NULL){
+    registro_listar_no(n->esq);
+    printf("%06d| %s\n", paciente_get_id(n->p), paciente_get_nome(n->p)); //Printa os números de forma alinhada
+    registro_listar_no(n->dir);
+  }
+}
+
+void registro_listar(REGISTRO* r){
+  if(r != NULL){
+    printf("#     | NOME\n");
+    registro_listar_no(r->raiz); 
+    printf("\n");
+  }
 }
