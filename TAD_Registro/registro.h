@@ -20,7 +20,7 @@
   //char registro_verificar(REGISTRO* r, int id); //*
   PACIENTE* registro_recuperar(REGISTRO* r, int id); //*
   
-  //Retonra 0, se teve sucesso na inserção; 1, se o valor já está no registro; 2, se, além do registro, também já estiver na fila
+  //Retorna 0, se teve sucesso na inserção; 1, se o valor já está no registro; 2, se, além do registro, também já estiver na fila
   int_8 registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila);  
   PACIENTE* registro_remover(REGISTRO* r, int id); //*
   
