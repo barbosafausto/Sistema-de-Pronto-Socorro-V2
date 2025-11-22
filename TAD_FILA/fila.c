@@ -50,12 +50,14 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia);
 PACIENTE *fila_remover(FILA *f);
 
 bool fila_cheia(FILA *f){
+    NO* teste;
     if(f != NULL){
-        NO *teste = fila_criar_no(NULL, 0, 0); //Como é um teste, não importa os dados passados, eles ocupam o mesmo espaço
+        teste = fila_criar_no(NULL, 0, 0); //Como é um teste, não importa os dados passados, eles ocupam o mesmo espaço
         if(teste != NULL && f->contador < __UINT32_MAX__){ //Valor máximo para um unsigned int
             return false;
         }
     }
+    free(teste); //evitando memory leak
     return true;
 }
 
