@@ -14,7 +14,6 @@ O nó é dado por:
 ```c
     struct no_fila{
         PACIENTE *p;
-        NO *dir, *esq;
         char urgencia; 
         uint ordem_chegada; 
     };
@@ -27,15 +26,21 @@ A estrutura é dado por:
 ```c
     struct fila{
         NO *frente;
+        uint final;
+        uint tamanho;
         uint contador; 
     };
 ```
 
-Neste caso, o contador é importante para controlar as ordens de chegada.
+Neste caso, o contador é importante para controlar as ordens de chegada. Os campos final e tamanho guardam o índice da próxima posição livre na fila e o tamanho máximo atual da fila, respectivamente.
 
 ### Funções
 
-- ``bool fila_cheia(FILA *f)``: retorna true, se o contador não estiver no máximo ou se não for possível mais alocações.
+- ``bool fila_inserir(FILA *f, PACIENTE *p, char urgencia);``: Cria um novo nó com o paciente passado para a função e o insere na fila em sua posição correta. Automaticamente aumenta o tamanho da fila quando necessário.
+
+- ``PACIENTE *fila_remover(FILA *f);``: Retorna o paciente com maior prioridade na fila e o remove dela. Automaticamente reduz o tamanho da fila quando o espaço não for mais necessário, mas não abaixo de um valor mínimo.
+
+- ``bool fila_cheia(FILA *f)``: retorna true se não for possível mais alocações ou se a fila não existir.
 
 - ``bool fila_vazia(FILA *f)``: retorna true, se a frente da fila estiver vazia.
 
