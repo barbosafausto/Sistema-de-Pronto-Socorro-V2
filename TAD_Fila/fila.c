@@ -121,7 +121,7 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 		if (f->final >= f->tamanho) //Caso não houver mais espaço na heap, adiciona-se um novo nível para ela.
 		{
 			NO** aux = f->arvore;
-			f->tamanho = (f->tamanho*2) + 1;
+			f->tamanho *= 2;
 			f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
 			/*Caso não exista espaço contíguo suficiente na memória, "realloc()" retorna NULL.
 			Para que o ponteiro para a heap não seja "perdido" caso uma realocação falhar, um ponteiro auxiliar recebe "f->arvore" antes de "realloc()" ser chamado.
@@ -129,7 +129,7 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 			if (f->arvore == NULL){
 			
 			        f->arvore = aux;
-			        f->tamanho = (f->tamanho-1)/2;
+			        f->tamanho /= 2;
 				return false;
 			}
 			aux = NULL;
@@ -153,9 +153,9 @@ PACIENTE *fila_remover(FILA *f){
 		f->final--;
 		FixDown(f);
 		
-		if (f->final > 100 && (f->final) == ((f->tamanho) - 1)/2 -1) //Se o espaço na heap não for mais necessário, um nível é removido.
+		if (f->tamanho => 200 && (f->final) == (f->tamanho/2) //Se o espaço na heap não for mais necessário, um nível é removido.
 		{ 
-			f->tamanho = (f->tamanho-1)/2;
+			f->tamanho /= 2;
 			f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
 		}
 		
@@ -169,14 +169,14 @@ bool fila_cheia(FILA *f){
         if (!(f->final >= f->tamanho)) return false; //Se o último nó não estiver ocupando o último espaço antes da necessidade de um realloc, a fila não está cheia.
         else{
                 NO** aux = f->arvore;
-	        f->tamanho = (f->tamanho*2) + 1;
+	        f->tamanho *= 2;
 	        f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
 	        /*Caso não exista espaço contíguo suficiente na memória, "realloc()" retorna NULL.
 	        Para que o ponteiro para a heap não seja "perdido" caso uma realocação falhar, um ponteiro auxiliar recebe "f->arvore" antes de "realloc()" ser chamado.
 	        Caso "realloc()" realmente tenha falhado, o ponteiro auxiliar "devolve" o ponteiro para para "f->arvore" */
 	        if (f->arvore == NULL){	
 	              f->arvore = aux;
-	              f->tamanho = (f->tamanho-1)/2;
+	              f->tamanho /= 2;
 	              return true; //Retorna verdadeiro caso o realloc falhar.
 	        }
 	        aux = NULL;
