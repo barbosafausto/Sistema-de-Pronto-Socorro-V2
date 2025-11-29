@@ -3,7 +3,10 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <stdbool.h>
+    
     #include "../TAD_Paciente/paciente.h"
+    #include "../TAD_Registro/registro.h"
+
 
     typedef struct fila FILA;
 
@@ -36,7 +39,8 @@
 
 
     //Cria e inseri os elementos de um arquivo na fila; nome do arquivo: "TAD_FILA/fila.txt"
-    FILA *fila_carregar(void); 
+    FILA *fila_carregar(REGISTRO *r); 
     //Remove e apaga a fila, armazenando seus elementos em um arquivo; nome do arquivo: "TAD_FILA/fila.txt"
     bool fila_salvar(FILA **f);
+
 #endif

@@ -5,7 +5,6 @@
 typedef struct no_fila NO;
 typedef unsigned int uint;
 
-//Mesmo com somente um campo, a struct é necessário para manter a information hiding do TAD
 struct fila {
     NO **arvore;
     uint final; //Índice da atual última posição.
@@ -194,10 +193,13 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 
 //Remoção
 PACIENTE *fila_remover(FILA *f){
+
 	if (f != NULL && f->final != 0){
+
 		PACIENTE *p = No_get_paciente(f->arvore[0]);
 		TrocaNo(&f->arvore[0], &f->arvore[f->final - 1]);
 		free(f->arvore[f->final-1]);
+
 		f->arvore[f->final-1] = NULL;
 		f->final--;
 		FixDown(f);
@@ -215,8 +217,6 @@ PACIENTE *fila_remover(FILA *f){
 //Fim da remoção
 
 
-
-
 //Função de listar em ordem de prioridade
 void fila_listar(FILA *f);
 
@@ -224,6 +224,45 @@ void fila_listar(FILA *f);
 
 
 //Funções de carregamento e salvamento
-FILA *fila_carregar(void); 
+FILA *fila_carregar(REGISTRO* r) {
+
+	/*
+	Os dados foram salvos no formato:
+	ID
+	Urgência
+
+	ID
+	Urgência
+	...
+	*/
+
+	FILE *fp = fopen("fila.txt", "r");
+	if (!fp) return NULL;
+	
+	FILA *f = fila_criar();
+	if (!f) return NULL;
+
+	int info, acao;
+	while (true) {
+
+		acao = fscanf(fp, "%d", &info);
+
+		if (acao == -1) break;
+		if (acao == 0) continue;
+
+		//Se chegou aqui, é porque encontrou um ID, então vamos buscar o paciente
+		PACIENTE *p = registro_recuperar(r, info);
+
+		//Temos o paciente, então podemos buscar a urgência dele
+		fscanf(fp, "%d", &info);
+
+		//Com isso, fazemos a inserção na fila de prioridade
+		fila_inserir(f, p, info);
+
+	}
+	fclose(fp);
+
+	return f;
+} 
 
 bool fila_salvar(FILA **f);

@@ -1,21 +1,23 @@
-all: fila.o paciente.o teste.o
-	gcc fila.o paciente.o teste.o -o main -Wall -lm
+all: fila.o paciente.o testes.o registro.o
+	gcc fila.o paciente.o testes.o registro.o -o testes -Wall -lm
 
-verifica: fila.o paciente.o testes.o 
-	gcc -g -fsanitize=address fila.o paciente.o testes.o -o testes -std=c99 -Wall -lm
+verifica: fila.o paciente.o testes.o registro.o
+	gcc -g -fsanitize=address fila.o paciente.o testes.o registro.o -o testes -std=c99 -Wall -lm
 
+registro.o:
+	gcc -c ../TAD_Registro/registro.c -o registro.o
 fila.o:
-	gcc -c fila.c -o fila.o -Wall -lm
+	gcc -c fila.c -o fila.o 
 
 paciente.o: 
 	gcc -c ../TAD_Paciente/paciente.c
 
-teste.o:
-	gcc -c teste.c -o teste.o -Wall -lm
+testes.o:
+	gcc -c testes.c -o testes.o 
 
 make run:
-	./main
+	./testes
 	
 clean:
 	rm *.o
-	rm main
+	rm testes
