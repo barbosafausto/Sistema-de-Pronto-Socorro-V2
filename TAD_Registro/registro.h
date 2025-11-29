@@ -24,13 +24,13 @@
   //registro_apagar_no() é chamada como auxiliar
   bool registro_apagar(REGISTRO** r);
 
+  //registro_altura_no() será muito útil em inserções/remoções
 
   //registro_rodar_esquerda()
   //registro_rodar_direita()
   //registro_rodar_esq_dir()
   //registro_rodar_dir_esq()
 
-  //registro_altura_no() será muito útil em inserções/remoções
   //registro_calcular_fb() para o fator de balanceamento
 
   //"registro_recuperar_no()" (auxiliar) busca pelo paciente no registro e retorna um nó.

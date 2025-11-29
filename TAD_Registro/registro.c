@@ -124,6 +124,21 @@ bool registro_apagar(REGISTRO** r){
 }
 
 
+
+
+//---- Altura 
+int registro_altura_no(NO *A) {
+
+  if (A == NULL) return -1;
+
+  return A->altura;
+}
+
+
+
+
+
+//Funções de rotação
 NO* registro_rodar_esquerda(NO* A) {
 
   NO* B = A->dir;
@@ -163,18 +178,18 @@ NO* registro_rodar_dir_esq(NO* A) {
   return registro_rodar_esquerda(A);
 }
 
-//---- Altura e FB
-int registro_altura_no(NO *A) {
 
-  if (A == NULL) return -1;
 
-  return A->altura;
-}
+
 
 /*Calcula o Fator de Balanceamento do nó A*/
 int registro_calcular_fb(NO* A){
   return (registro_altura_no(A->esq) - registro_altura_no(A->dir));
 }
+
+
+
+
 
 //----Recuperação de valor
 NO* registro_recuperar_no(NO *raiz, int id) {
