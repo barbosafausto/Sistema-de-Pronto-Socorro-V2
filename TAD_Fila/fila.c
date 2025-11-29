@@ -6,7 +6,7 @@ typedef struct no_fila NO;
 typedef unsigned int uint;
 
 //Mesmo com somente um campo, a struct é necessário para manter a information hiding do TAD
-struct fila {
+struct fila{
     NO **arvore;
     uint final; //Índice da atual última posição.
     uint tamanho; //Tamanho máximo atual da fila.
@@ -32,7 +32,7 @@ FILA *fila_criar(void){
         
 	f->final = 0;
 	f->tamanho = 100;
-    f->contador = 0;
+        f->contador = 0;
 		
 	return f;
     }
@@ -50,9 +50,10 @@ NO *fila_criar_no(PACIENTE *p, char urgencia, uint ordem_chegada){
     return novo;
 }
 
+FILA *fila_carregar(void); 
 
+bool fila_salvar(FILA **f);
 
-//Função de swap entre dois nós
 void TrocaNo(NO** a, NO** b){
   NO* aux;
 	
@@ -60,16 +61,13 @@ void TrocaNo(NO** a, NO** b){
   *a = *b;
   *b = aux;
 	
+  return;
 }
 
-
-//Função que pega o paciente a partir de seu nó
 PACIENTE *No_get_paciente(NO* n){
   return n->p;
 }
 
-
-//Comparação de prioridades
 bool ChecaPrioridade(NO* a, NO* b){
         //Esta função é responsável por detectar qual dos dois nós comparados possui maior prioridade. Ela retorna "true" caso o primeiro nó possui maior prioridade e "false" caso o segundo possuir menor prioridade.
         if (a->urgencia < b->urgencia) return true;
@@ -78,44 +76,6 @@ bool ChecaPrioridade(NO* a, NO* b){
         return (a->ordem_chegada < b->ordem_chegada);
 }
 
-
-
-
-//Funções FilaCheia e FilaVazia
-bool fila_cheia(FILA *f){
-    if(f != NULL){
-        if (!(f->final >= f->tamanho)) return false; //Se o último nó não estiver ocupando o último espaço antes da necessidade de um realloc, a fila não está cheia.
-        else{
-                NO** aux = f->arvore;
-	        f->tamanho *= 2;
-	        f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
-	        /*Caso não exista espaço contíguo suficiente na memória, "realloc()" retorna NULL.
-	        Para que o ponteiro para a heap não seja "perdido" caso uma realocação falhar, um ponteiro auxiliar recebe "f->arvore" antes de "realloc()" ser chamado.
-	        Caso "realloc()" realmente tenha falhado, o ponteiro auxiliar "devolve" o ponteiro para para "f->arvore" */
-	        if (f->arvore == NULL){	
-	              f->arvore = aux;
-	              f->tamanho /= 2;
-	              return true; //Retorna verdadeiro caso o realloc falhar.
-	        }
-	        aux = NULL;
-	        f->tamanho /= 2;
-	        f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
-	        return false;
-	}
-    }
-    return true;
-}
-
-bool fila_vazia(FILA *f){
-    if(f != NULL) return (f->final == 0);
-	return false;
-}
-//Fim das funções Cheia e Vazia
-
-
-
-
-//Funções de conserto da árvore após inserção/remoção
 void FixUp(FILA *f){
 	uint PosicaoAtual = f->final;
 	
@@ -152,12 +112,7 @@ void FixDown(FILA* f){
 	
 	return;
 }
-//Fim das funções de conserto
 
-
-
-
-//Inserção
 bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 	if (f != NULL){
 		
@@ -188,11 +143,7 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 	}
 	return false;
 }
-//Fim da inserção
 
-
-
-//Remoção
 PACIENTE *fila_remover(FILA *f){
 	if (f != NULL && f->final != 0){
 		PACIENTE *p = No_get_paciente(f->arvore[0]);
@@ -202,7 +153,7 @@ PACIENTE *fila_remover(FILA *f){
 		f->final--;
 		FixDown(f);
 		
-		if (f->tamanho >= 200 && (f->final) == (f->tamanho/2)) //Se o espaço na heap não for mais necessário, um nível é removido.
+		if (f->tamanho => 200 && (f->final) == (f->tamanho/2) //Se o espaço na heap não for mais necessário, um nível é removido.
 		{ 
 			f->tamanho /= 2;
 			f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
@@ -212,18 +163,34 @@ PACIENTE *fila_remover(FILA *f){
 	}
 	return NULL;
 }
-//Fim da remoção
 
+bool fila_cheia(FILA *f){
+    if(f != NULL){
+        if (!(f->final >= f->tamanho)) return false; //Se o último nó não estiver ocupando o último espaço antes da necessidade de um realloc, a fila não está cheia.
+        else{
+                NO** aux = f->arvore;
+	        f->tamanho *= 2;
+	        f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
+	        /*Caso não exista espaço contíguo suficiente na memória, "realloc()" retorna NULL.
+	        Para que o ponteiro para a heap não seja "perdido" caso uma realocação falhar, um ponteiro auxiliar recebe "f->arvore" antes de "realloc()" ser chamado.
+	        Caso "realloc()" realmente tenha falhado, o ponteiro auxiliar "devolve" o ponteiro para para "f->arvore" */
+	        if (f->arvore == NULL){	
+	              f->arvore = aux;
+	              f->tamanho /= 2;
+	              return true; //Retorna verdadeiro caso o realloc falhar.
+	        }
+	        aux = NULL;
+	        f->tamanho /= 2;
+	        f->arvore = (NO**)realloc(f->arvore, f->tamanho * sizeof(NO *));
+	        return false;
+	}
+    }
+    return true;
+}
 
+bool fila_vazia(FILA *f){
+    if(f != NULL) return (f->final == 0);
+return false;
+}
 
-
-//Função de listar em ordem de prioridade
 void fila_listar(FILA *f);
-
-
-
-
-//Funções de carregamento e salvamento
-FILA *fila_carregar(void); 
-
-bool fila_salvar(FILA **f);
