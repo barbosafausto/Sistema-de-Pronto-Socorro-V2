@@ -4,7 +4,7 @@
   #include "../TAD_Paciente/paciente.h"
 
   /**
-  Funções com "//*" em seu final ainda não foram implementadas.
+  Funções com "//" em seu final ainda não foram implementadas.
   Existem funções que serão necessárias mas que ainda não foram declaradas/o usuário não terá acesso, como as funções de rotação da AVL.
   **/
   
@@ -12,24 +12,52 @@
   typedef char int_8;
   
   REGISTRO* registro_criar(void);
+
+  //As funções abaixo talvez sejam removidas do projeto posteriormente.
+  //registro_criar_no(): cria um nó e inicializa os dados
+  //no_get_paciente(): pega o paciente de um nó
+  //no_apagar(): apagar um nó e seu paciente 
   
-  //Não é necessário "bool registro_cheio()" pois em teoria não existe limite para o número de pacientes que podem estar registrados no hospital.
   bool registro_vazio(REGISTRO* r);
-  
-  //"registro_buscar()" busca pelo paciente no registro. "registro_verificar()" e "registro_recuperar()" chamam "registro_buscar()", suas únicas diferenças sendo o retorno das funções.
-  //char registro_verificar(REGISTRO* r, int id); //*
+  bool registro_cheio(REGISTRO* r);
+
+  //registro_apagar_no() é chamada como auxiliar
+  bool registro_apagar(REGISTRO** r);
+
+
+  //registro_rodar_esquerda()
+  //registro_rodar_direita()
+  //registro_rodar_esq_dir()
+  //registro_rodar_dir_esq()
+
+  //registro_altura_no() será muito útil em inserções/remoções
+  //registro_calcular_fb() para o fator de balanceamento
+
+  //"registro_recuperar_no()" (auxiliar) busca pelo paciente no registro e retorna um nó.
   PACIENTE* registro_recuperar(REGISTRO* r, int id); //*
   
   //Retorna 0, se teve sucesso na inserção; 1, se o valor já está no registro; 2, se, além do registro, também já estiver na fila
+  //Usa registro_inserir_no() como função auxiliar para inserir no local certo.
   int_8 registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila);  
+
+
+  //Usa a função registro_remover_no() para buscar o nó e removê-lo
+  //Usa a função troca_max_esq() para substituir o nó quando necessário
   PACIENTE* registro_remover(REGISTRO* r, int id); //*
+ 
   
   //Percorre o registro em-ordem mostrando seus elementos
-  void registro_listar(REGISTRO* r); 
+  //Usa a função auxiliar registro_listar_no
+  void registro_listar(REGISTRO*r); 
+
+
+  //As funções abaixo ainda serão implementadas
   bool registro_salvar(REGISTRO** r); //*
   REGISTRO* registro_carregar(void); //*
   
-  //FUNÇÃO TEMPORÁRIA PARA EVITAR VAZAMENTO DE MEMÓRIA DURANTE OS TESTES. Esta função NÃO libera os nós dentro do registro e será substituída por "registro_salvar()" futuramente.
-  bool registro_apagar(REGISTRO** r);
+
+  //Funções úteis para testes
+  //Usa a função imprimir_no_visual (auxiliar)
+  void imprimir_arvore_visual(REGISTRO* r);
     
 #endif
