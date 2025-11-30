@@ -41,9 +41,11 @@ Neste caso, o contador é importante para controlar as ordens de chegada.
 
 - ``FILA *fila_criar(void)``: aloca memória para a struct fila, colocando contador como 0 e frente como NULL.
 
+- ``FILA *fila_carregar(REGISTRO *r)``: carrega os pacientes salvos no arquivo `fila.txt`. São feitas buscas no registro para encontrar o ponteiro para cada paciente e colocá-lo na fila.
+
 ## REGISTRO
 
-TAD reponsável por armazenar os dados e cadastros dos pacientes. É organizado como uma árvore do tipo AVL a fim de evitar operações com complexidade linear.
+> TAD reponsável por armazenar os dados e cadastros dos pacientes. É organizado como uma árvore do tipo AVL a fim de evitar operações com complexidade linear.
 
 ### Funções
 
@@ -52,4 +54,6 @@ TAD reponsável por armazenar os dados e cadastros dos pacientes. É organizado 
 - `void registro_listar(REGISTRO* r)`: chama a função registro_listar_no a fim de mostrar os nomes e ID's dos pacientes presentes no registro seguindo a ordem dos ID's. É feito com um percurso em-ordem.
 
 - `bool registro_apagar(REGISTRO** r)`: desaloca todos nós da árvore, inclusive ela mesma, evitando memory leak. **Não será usada no programa final, provavelmente.**
+
+- `bool registro_salvar(REGISTRO** r)`: percorre a AVL recursivamente, em pós-ordem, salvando os nós no arquivo `registro.txt` a partir das folhas.
 
