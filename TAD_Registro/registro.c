@@ -463,6 +463,65 @@ void registro_listar(REGISTRO* r){
 
 
 
+//Funções de carregamento e salvamento
+void registro_salvar_no(NO *raiz) {
+
+  if (!raiz) return;
+  
+  //Pós-ordem, para não perder o acesso aos ponteiros
+  registro_salvar_no(raiz->esq);
+  registro_salvar_no(raiz->dir);
+
+  //Usando a opção append para escrever no final do arquivo, sem apagar nada
+  FILE *fp = fopen("registro.txt", "a");
+
+  //Escrevendo no arquivo: id, nome, esta_na_fila
+  fprintf(fp, "%d\n", paciente_get_id(raiz->p));
+  fprintf(fp, "%s\n", paciente_get_nome(raiz->p));
+  fprintf(fp, "%d\n", raiz->esta_na_fila);
+  fprintf(fp, "\n");
+
+  //Fechando arquivo
+  fclose(fp);
+
+  //Desalocando tudo
+  raiz->esq = raiz->dir = NULL;
+  paciente_apagar(&raiz->p);
+  free(raiz);
+  raiz = NULL;
+
+}
+
+bool registro_salvar(REGISTRO **r) {
+
+  if (!r || !*r) return false;
+
+  if (registro_vazio(*r)) return true;
+
+  //Abrindo o arquivo em modo de escrita para apagar o conteúdo que tem nele
+  FILE *fp = fopen("registro.txt", "w");
+  fclose(fp);
+
+  /*A lógica de salvamento será:
+  ID
+  Nome
+  esta_na_fila
+  
+  ID
+  Nome
+  esta_na_fila
+  ...*/
+
+  registro_salvar_no((*r)->raiz);
+
+  free(*r);
+  *r = NULL;
+
+  return true;
+}
+
+
+
 
 void imprimir_no_visual(NO *raiz, int nivel) {
 

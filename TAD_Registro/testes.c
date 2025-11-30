@@ -3,6 +3,7 @@
 
 int main(void) {
 
+  
   /*TESTE DE INSERÇÃO e REMOÇÃO*/
 
   int n, id;
@@ -32,12 +33,12 @@ int main(void) {
 
     p = paciente_criar(nome, id);
 
-    if(!(verifica = registro_inserir(r, p, false)))
+    if(!(verifica = registro_inserir(r, p, true)))
       printf("Paciente adicionado.\n\n");
 
-    else if (verifica == 1) printf("Falha, está no registro.\n\n");
+    else if (verifica == 1) printf("Falha, está no registro.\n\n"), paciente_apagar(&p);
 
-    else printf("Falha, está no registro e na fila.\n\n");
+    else printf("Falha, está no registro e na fila.\n\n"), paciente_apagar(&p);
 
     registro_listar(r); //Listando pacientes
     printf("\n\n");
@@ -47,15 +48,15 @@ int main(void) {
 
 
   //Testes de remoção
-  p = registro_remover(r, 30);
+  p = registro_remover(r, 3);
   paciente_apagar(&p);
   
   printf("Lista de pacientes após remoção:\n");
   registro_listar(r); //Listando pacientes
 
 
-  registro_apagar(&r);
-  if (r == NULL) printf("Registro apagado.\n");
+  registro_salvar(&r);
+  if (r == NULL) printf("Registro salvo e apagado.\n");
 
   return 0;
 }
