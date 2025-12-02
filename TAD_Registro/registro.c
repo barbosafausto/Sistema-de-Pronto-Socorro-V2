@@ -496,8 +496,6 @@ bool registro_salvar(REGISTRO **r) {
 
   if (!r || !*r) return false;
 
-  if (registro_vazio(*r)) return true;
-
   //Abrindo o arquivo em modo de escrita para apagar o conteúdo que tem nele
   FILE *fp = fopen("registro.txt", "w");
   fclose(fp);
