@@ -16,7 +16,7 @@ struct registro_ {
 
 struct no_registro {
   
-  PACIENTE* p; //Como "p" acaba sendo usado como variável de paciente em testes, dar um nome único à variável dentro do nó evita confusão.
+  PACIENTE* p;
   NO* dir;
   NO* esq;
   int altura;
@@ -47,7 +47,7 @@ NO* registro_criar_no(PACIENTE* p, bool esta_na_fila){
   n->dir = NULL;
   n->esq = NULL;
   n->altura = 0;
-  n->esta_na_fila = esta_na_fila; //Ao serem criados, nós são considerados como não estando na fila, pois vários nós são gerados ao carregar o registro e nem todos estarão na fila.
+  n->esta_na_fila = esta_na_fila;
   
   return n;
 }
@@ -519,6 +519,35 @@ bool registro_salvar(REGISTRO **r) {
 }
 
 
+REGISTRO* registro_carregar(void){
+    
+  FILE* mao = fopen("registro.txt", "r");
+  REGISTRO* r = registro_criar();
+  if (mao == NULL || r == NULL){
+    fclose(mao);
+    return NULL;
+  }
+  
+  int id;
+  char nome[101];
+  int estanafila;
+  PACIENTE* p;
+  
+  while(true){
+    if (fscanf(mao, " %d", &id) == EOF){
+      fclose(mao);
+      return r;
+    }
+    fscanf(mao, " %s", nome);
+    fscanf(mao, " %d", &estanafila);
+    p = paciente_criar(nome, id);
+    
+    registro_inserir(r, p, (estanafila != 0));
+    fgetc(mao); //Ignora o '\n' entre todos os pacientes.
+  }
+
+  return NULL;
+}
 
 
 void imprimir_no_visual(NO *raiz, int nivel) {
