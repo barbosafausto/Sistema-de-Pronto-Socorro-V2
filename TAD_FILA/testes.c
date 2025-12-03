@@ -105,6 +105,6 @@ int main(void){
     }
 
     fila_salvar(&f);
-    registro_apagar(&r);
-    return 0;*/
+    registro_apagar(&r);*/
+    return 0;
 }

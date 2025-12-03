@@ -1,5 +1,9 @@
 #include "fila.h"
 
+#define esq(n) (2*n + 1)
+#define dir(n) (2*n + 2)
+#define pai(n) ((n - 1)/2)
+
 //A fila é implementada usando uma Min-Heap
 
 typedef struct no_fila NO;
@@ -124,13 +128,13 @@ void fila_fix_up(FILA *f, uint posicao_inicial){
 	if(f == NULL) return;
 
 	uint posicao_atual = posicao_inicial;
-	uint posicao_pai = (posicao_atual - 1)/2; //Fórmula para o pai
+	uint posicao_pai = pai(posicao_atual); //Fórmula para o pai
 	
 	while((posicao_atual != 0) && fila_checa_prioridade(f->arvore[posicao_atual], f->arvore[posicao_pai])){
 
 		fila_swap_no(&(f->arvore[posicao_atual]), &(f->arvore[posicao_pai])); //Enquanto o nó inserido não for a raiz e seu pai tiver menor prioridade, ele é trocado de posição com seu pai.
 		posicao_atual = posicao_pai; //Indo para a posição do pai
-		posicao_pai = (posicao_atual - 1)/2; //Atualizando o pai
+		posicao_pai = pai(posicao_atual); //Atualizando o pai
 
 	}
 	
@@ -146,12 +150,12 @@ void fila_fix_down(FILA* f, uint posicao_inicial){
 	while(true){
 	        maior_prioridade = posicao_atual; //maior_prioridade guarda o índice do nó de maior prioridade entre os testados.
 	        
-	        if (2*posicao_atual+1 < f->final && fila_checa_prioridade(f->arvore[(2*posicao_atual)+1], f->arvore[maior_prioridade])){
-	              maior_prioridade = (2*posicao_atual)+1; //Se o filho esquerdo tiver maior prioridade que a posição atual, atualiza-se o índice.
+	        if (esq(posicao_atual) < f->final && fila_checa_prioridade(f->arvore[esq(posicao_atual)], f->arvore[maior_prioridade])){
+	              maior_prioridade = esq(posicao_atual); //Se o filho esquerdo tiver maior prioridade que a posição atual, atualiza-se o índice.
 	        }
 	        
-	        if (2*posicao_atual+2 < f->final && fila_checa_prioridade(f->arvore[(2*posicao_atual)+2], f->arvore[maior_prioridade])){
-	              maior_prioridade = (2*posicao_atual)+2; //Se o filho direito tiver maior prioridade que a posição de maior prioridade encontrada até agora (seja a posição atual ou o filho esquerdo), atualiza-se o índice.
+	        if (dir(posicao_atual) < f->final && fila_checa_prioridade(f->arvore[dir(posicao_atual)], f->arvore[maior_prioridade])){
+	              maior_prioridade = dir(posicao_atual); //Se o filho direito tiver maior prioridade que a posição de maior prioridade encontrada até agora (seja a posição atual ou o filho esquerdo), atualiza-se o índice.
 	        }
 	        
 	        if (maior_prioridade == posicao_atual){
@@ -222,7 +226,7 @@ PACIENTE *fila_remover(FILA *f){
 	if (!fila_vazia(f)) {
 
 		PACIENTE *p = f->arvore[0]->p; //Sempre se remove a raiz (o primeira da fila)
-		fila_swap_no(&(f->arvore[0]), &(f->arvore[f->final - 1]));
+		fila_swap_no(&(f->arvore[0]), &(f->arvore[f->final-1]));
 		free(f->arvore[f->final-1]); //Só apaga o nó e não o paciente p nele, já que iremos retorná-lo
 
 		f->arvore[f->final-1] = NULL;
