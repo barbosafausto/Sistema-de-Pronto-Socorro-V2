@@ -1,0 +1,23 @@
+#ifndef CLIENTE_H
+    #define CLIENTE_H
+    
+    #include "../TAD_Paciente/paciente.h"
+    #include "../TAD_Fila/fila.h"
+    #include "../TAD_Registro/registro.h"
+    
+    bool inicializar(REGISTRO**r, FILA** f);
+    void sair(REGISTRO** r, FILA** f);
+    
+    PACIENTE* registrar_paciente(int id, char* nome);
+    
+    bool dar_alta_ao_paciente(FILA* f);
+    PACIENTE* remover_paciente(REGISTRO* r, int id);
+    
+    PACIENTE* buscar_paciente_por_ID(int id);
+    
+    void mostrar_fila_de_espera(FILA* f);
+    void listar_pacientes(REGISTRO* r);
+    
+    
+    
+#endif
