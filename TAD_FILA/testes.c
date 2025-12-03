@@ -78,6 +78,33 @@ int main(void){
     free(p2);
     free(p3);
     free(p4);*/
-    
-    return 0;
+
+
+    /*TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
+    FILA* f = fila_criar();
+    REGISTRO* r = registro_criar();
+    PACIENTE* p;
+
+    int id, m, n; scanf("%d", &n);
+    char urg, nome[101];
+
+    //Inserções
+    for(int i = 0; i < n; i++){
+        scanf("%d %c %100[^\n]", &id, &urg, nome);
+        p = paciente_criar(nome, id);
+        registro_inserir(r, p, true);
+        fila_inserir(f, p, urg);
+        fila_listar(&f);
+    }
+
+    //Remoções
+    scanf("%d", &m);
+    for(int i = 0; i < m; i++){
+      fila_remover(f);
+      fila_listar(&f);
+    }
+
+    fila_salvar(&f);
+    registro_apagar(&r);
+    return 0;*/
 }
