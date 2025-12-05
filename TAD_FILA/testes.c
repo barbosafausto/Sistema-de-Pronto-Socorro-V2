@@ -19,6 +19,8 @@ int main(void){
     FILA *f = fila_carregar(r);
     if(f != NULL) printf("ok!\n");
 
+    fila_listar(&f);
+
     while (!fila_vazia(f)) {
 
       PACIENTE *p = fila_remover(f);
@@ -28,13 +30,16 @@ int main(void){
 
     }
 
-    free(f);
+    //free(f); //Não está liberando o array
 
+    fila_salvar(&f);
     registro_apagar(&r);
     if (registro_vazio(r)) printf("vazio, ok!\n");
 
 
     /* TESTES DAS FUNÇÕES DA FILA
+    FILA *f = fila_criar();
+
     PACIENTE *p1 = paciente_criar("Nádia", 1);
     PACIENTE *p2 = paciente_criar("Renan", 2);
     PACIENTE *p3 = paciente_criar("Maria", 3);
@@ -60,25 +65,23 @@ int main(void){
       printf("Paciente inserido corretamente: 4\n");
     }
     
-    if(!fila_cheia(f)){
+    if(!fila_cheia_aumentar(f)){
       printf("Fila não está cheia.\n");
     }
-    
+
+    fila_listar(&f); //Testando fila listar
     
     PACIENTE* aux;
     //Espera-se que a ordem de saída da fila seja Luiz, Nádia, Renan e Maria.
     for (int i = 0; i<4; i++){
-    aux = fila_remover(f);
-    printf("Paciente foi chamado para atendimento: %s\n", paciente_get_nome(aux));
+      aux = fila_remover(f);
+      printf("Paciente foi chamado para atendimento: %s\n", paciente_get_nome(aux));
+      paciente_apagar(&aux);
     }
    
+    fila_listar(&f); //Deve escrever: A fila está vazia
     
-    Mesmo chamando estas funções, memory leak ocorrerá por ainda não existir uma função que apague a fila.
-    free(p1);
-    free(p2);
-    free(p3);
-    free(p4);*/
-
+    fila_salvar(&f);*/
 
     /*TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
     FILA* f = fila_criar();

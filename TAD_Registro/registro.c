@@ -208,6 +208,8 @@ PACIENTE* registro_recuperar(REGISTRO* r, int id) {
 
   NO *paciente = registro_recuperar_no(r->raiz, id);
 
+  if(paciente == NULL) return NULL;
+  
   return paciente->p;
 }
 //---Fim da recuperação de valor
