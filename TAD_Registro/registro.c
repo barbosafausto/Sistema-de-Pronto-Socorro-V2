@@ -352,6 +352,12 @@ NO* registro_remover_no(NO *raiz, int id, PACIENTE **p) {
   else if (id > id_no) raiz->dir = registro_remover_no(raiz->dir, id, p);
   else {
 
+    if (raiz->esta_na_fila) {
+
+      printf("O paciente não pode ser removido, pois ele está na fila.\n");
+      return raiz;
+    }
+
     *p = raiz->p;
 
     if (raiz->esq == NULL || raiz->dir == NULL) {
