@@ -3,7 +3,7 @@
   bool inicializar(REGISTRO**r, FILA** f);
   void sair(REGISTRO** r, FILA** f);
     
-  PACIENTE* registrar_paciente(int id, char* nome);
+  bool registrar_paciente(int id, char* nome);
     
   bool dar_alta_ao_paciente(FILA* f);
   
