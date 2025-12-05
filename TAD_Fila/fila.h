@@ -13,18 +13,9 @@
     //Aloca espaço para a fila
     FILA *fila_criar(void); 
 
-    //fila_criar_no(): cria um nó e o preenche
-    //TrocaNo(): faz swap entre dois nós
-    //No_get_paciente(): pega o paciente de seu nó
-
-    //ChecaPrioridade(): verifica qual é mais prioritório entre 2 pacientes
-
     //Funções fila_cheia() e fila_vazia()
-    bool fila_cheia(FILA *f);
+    bool fila_cheia_aumentar(FILA *f); //Confere se há espaço na heap, se houver aumenta o tamanho da fila
     bool fila_vazia(FILA *f);
-
-    //FixUp()
-    //FixDown()
 
     //Insere um paciente na fila
     bool fila_inserir(FILA *f, PACIENTE *p, char urgencia);
@@ -34,9 +25,7 @@
 
 
     //Lista os elementos em ordem de prioridade
-    void fila_listar(FILA *f);
-
-
+    void fila_listar(FILA **f);
 
     //Cria e inseri os elementos de um arquivo na fila; nome do arquivo: "TAD_FILA/fila.txt"
     FILA *fila_carregar(REGISTRO *r); 
