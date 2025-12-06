@@ -5,7 +5,21 @@
 //#define ESTA_REGISTRO 1
 #define ESTA_FILA 2
 
-bool inicializar(REGISTRO**r, FILA** f);
+bool inicializar(REGISTRO**r, FILA** f){
+  
+  *r = registro_carregar();
+  if (*r == NULL){
+    return false;
+  }
+  
+  *f = fila_carregar(*r);
+  if (*f == NULL){
+    return false;
+  }
+  
+  return true;
+}
+
 void sair(REGISTRO** r, FILA** f);
     
 bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia) {
@@ -38,7 +52,16 @@ PACIENTE* remover_paciente(REGISTRO* r, int id){
   return(registro_remover(r, id));
 }
     
-PACIENTE* buscar_paciente_por_ID(int id);
+PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id){
+  
+  PACIENTE* p = registro_recuperar(r, id); //Esta função realiza uma busca no registro e retorna ponteiro para paciente.
+  if (p == NULL){
+    printf("-_-_-_-_-_-_-_-_-_-_-_-\nNenhum paciente com o ID %d foi encontrado no registro.\n-_-_-_-_-_-_-_-_-_-_-_-\n\n", id);
+    return NULL;
+  }
+  printf("-_-_-_-_-_-_-_-_-_-_-_-\nO seguinte paciente foi encontrado no registro:\nID - %d\nNome - %s\n-_-_-_-_-_-_-_-_-_-_-_-\n\n", id, paciente_get_nome(p));
+  return p;
+}
     
 void mostrar_fila_de_espera(FILA* f);
 

@@ -13,7 +13,7 @@
     bool dar_alta_ao_paciente(FILA* f);
     PACIENTE* remover_paciente(REGISTRO* r, int id);
     
-    PACIENTE* buscar_paciente_por_ID(int id);
+    PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id);
     
     void mostrar_fila_de_espera(FILA* f);
     void listar_pacientes(REGISTRO* r);

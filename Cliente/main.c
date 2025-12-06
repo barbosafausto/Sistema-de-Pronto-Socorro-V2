@@ -2,28 +2,27 @@
 
 int main(void) {
 
-  REGISTRO *r = registro_criar();
-  FILA *f = fila_criar();
 
-  registrar_paciente(r, f, 1, "Fausto", '1');
+  printf("Oi\n");
+  REGISTRO *r;
+  FILA *f;
 
-  registrar_paciente(r, f, 1, "Joao", '1');
-  registrar_paciente(r, f, 2, "Joao", '2');
+  if (!inicializar(&r, &f)){
+    printf("Erro ao inicializar os dados!\n");
+  }
   
-  registrar_paciente(r, f, 2, "Edu", '2');
-  registrar_paciente(r, f, 3, "Edu", '1');
+  listar_pacientes(r);
   
-  PACIENTE *p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
-  p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
-  p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
-
-  remover_paciente(r, 2);
+  registrar_paciente(r, f, 1001, "Fausto", '2');
+  registrar_paciente(r, f, 1002, "Joao", '1');
+  registrar_paciente(r, f, 1003, "Edu", '2');
+  registrar_paciente(r, f, 1004, "Rudinei", '4');
+  
+  buscar_paciente_por_ID(r, 1001);
+  buscar_paciente_por_ID(r, 1004);
+  buscar_paciente_por_ID(r, 101);
 
   listar_pacientes(r);
-
 
   return 0;
 }
