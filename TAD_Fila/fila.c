@@ -112,11 +112,12 @@ bool fila_cheia_aumentar(FILA *f){ //verifica se a última posição do vetor al
     return true;
 }
 
-void fila_diminuir(FILA *f){ //Dividi o tamanho da fila por 2 a depender da última posição ocupada
+void fila_diminuir(FILA *f){ //Divide o tamanho da fila por 2 a depender da última posição ocupada
 	if (f->tamanho >= TAM_INICIAL*2 && (f->final) < (f->tamanho/2)) { //Se o espaço na heap não for mais necessário, um nível é removido.
 			f->tamanho /= 2;
 			f->heap = (NO**) realloc(f->heap, f->tamanho * sizeof(NO*));
 	}
+        return;
 }
 
 bool fila_vazia(FILA *f){
