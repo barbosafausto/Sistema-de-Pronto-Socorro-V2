@@ -25,8 +25,13 @@ bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia
   //Se chegou aqui, deu tudo certo.
   return true;
 }
+
+
     
 bool dar_alta_ao_paciente(FILA* f);
+
+
+
   
 PACIENTE* remover_paciente(REGISTRO* r, int id){
 
@@ -36,5 +41,10 @@ PACIENTE* remover_paciente(REGISTRO* r, int id){
 PACIENTE* buscar_paciente_por_ID(int id);
     
 void mostrar_fila_de_espera(FILA* f);
-void listar_pacientes(REGISTRO* r);
+
+void listar_pacientes(REGISTRO* r) {
+
+  registro_listar(r);
+}
+
     

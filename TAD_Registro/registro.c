@@ -190,7 +190,6 @@ int registro_calcular_fb(NO* A){
 
 
 
-
 //----Recuperação de valor
 NO* registro_recuperar_no(NO *raiz, int id) {
 
@@ -213,6 +212,25 @@ PACIENTE* registro_recuperar(REGISTRO* r, int id) {
   return paciente->p;
 }
 //---Fim da recuperação de valor
+
+
+
+
+//----Atualização de nó após remoção da fila
+bool registro_atualiza(REGISTRO *r, int id) {
+
+  //Essa função é chamada quando um paciente é removido da fila.
+
+  NO *node = registro_recuperar_no(r->raiz, id);
+  if (!node) return false;
+
+  node->esta_na_fila = false;
+  return true;
+}
+//----Fim da atualização de nó após remoção da fila
+
+
+
 
 
 
