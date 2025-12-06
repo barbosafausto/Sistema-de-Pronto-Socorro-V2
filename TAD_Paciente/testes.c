@@ -22,6 +22,12 @@ int main() {
     //Output precisa ser "Marcelo Almeida" e "2"
     printf("%s\n", paciente_get_nome(p));
     printf("%d\n", paciente_get_id(p));
+    if(paciente_get_esta_fila(p)) printf("Está\n");
+    else printf("Não está\n");
+
+    paciente_set_esta_fila(p, true);
+    if(paciente_get_esta_fila(p)) printf("Está\n");
+    else printf("Não está\n");
 
     paciente_apagar(&p);
 

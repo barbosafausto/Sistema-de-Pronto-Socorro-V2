@@ -1,6 +1,6 @@
 #include "fila.h"
 
-#define TAM_INICIAL 1 //Tamanho inicial razoalvemente grande, já que é esperado bastante atendimentos no hospital
+#define TAM_INICIAL 100 //Tamanho inicial razoalvemente grande, já que é esperado bastante atendimentos no hospital
 #define esq(n) (2*n + 1)
 #define dir(n) (2*n + 2)
 #define pai(n) ((n - 1)/2)
@@ -23,6 +23,9 @@ struct no {
     uint ordem_chegada; //Utilizado para diferenciar pacientes com mesma urgência, priorizando aqueles que chegaram primeiro 
 };
 
+/*===============================================================================*/
+//Funções de alocar fila e nó
+
 FILA *fila_criar(void){
     FILA *f = (FILA*)malloc(sizeof(FILA));
 
@@ -31,7 +34,7 @@ FILA *fila_criar(void){
         f->heap = malloc(TAM_INICIAL * sizeof(NO*)); //O vetor dentro da struct é dinâmicamente alocado.
         
         if (f->heap == NULL){
-			free(f);
+			free(f); //Alocação do vetor falhou; desalocamos a fila para não haver memory leak
           	return NULL;
         }
         
@@ -44,7 +47,7 @@ FILA *fila_criar(void){
     return NULL;
 } 
 
-NO *fila_criar_item(PACIENTE *p, char urgencia, uint ordem_chegada){
+NO *fila_criar_no(PACIENTE *p, char urgencia, uint ordem_chegada){
     
     NO *novo = (NO*) malloc(sizeof(NO));
     if(novo != NULL){
@@ -55,8 +58,10 @@ NO *fila_criar_item(PACIENTE *p, char urgencia, uint ordem_chegada){
     return novo;
 }
 
-//Função de swap entre dois nós
-void fila_swap_item(NO **a, NO **b){ 
+/*===============================================================================*/
+//Função de swap entre dois nós (para fix_up e fix_down)
+
+void fila_swap_no(NO **a, NO **b){ 
   	if(a == NULL || b == NULL) return; //Se forem iguais a NULL, a operação de derreferenciamento será inválida
 	
 	NO *aux;
@@ -67,14 +72,10 @@ void fila_swap_item(NO **a, NO **b){
 
 }
 
-/*//Função que pega o paciente a partir de seu nó
-PACIENTE *fila_get_paciente_PACIENTE(PACIENTE* n){
-	if(n == NULL) return NULL;
-	return n->p;
-}*/
+/*===============================================================================*/
+//Funções de comparação de prioridades
 
-//Comparação de prioridades
-bool fila_checa_prioridade(NO *a, NO *b){ //Esta função é responsável por detectar qual dos dois nós comparados possui maior prioridade. Ela retorna "true" caso o primeiro nó possui maior prioridade e "false" caso o segundo possuir mePACIENTEr prioridade.
+bool fila_checa_prioridade(NO *a, NO *b){ //Esta função é responsável por detectar qual dos dois nós comparados possui maior prioridade. Ela retorna "true" caso o primeiro nó possui maior prioridade e "false" caso o segundo possuir menor prioridade.
         if (a->urgencia < b->urgencia) return true;
         if (a->urgencia > b->urgencia) return false;
         
@@ -84,11 +85,11 @@ bool fila_checa_prioridade(NO *a, NO *b){ //Esta função é responsável por de
 /*===============================================================================*/
 //Funções sobre tamanho da fila
 
-bool fila_cheia_aumentar(FILA *f){ //Não precisamos passar ponteiro de ponteiro já que esse parâmetro na stack vai apontar pra mesma árvore (vetor)
+bool fila_cheia_aumentar(FILA *f){ //verifica se a última posição do vetor alocado está ocupado, se estiver dobra o tamnaho do vetor
 	if(f != NULL){
 
 		if (f->final < f->tamanho) 
-			return false; //Se o último nó não estiver ocupando o último espaço não há de um realloc, a fila não está cheia.
+			return false; //Se o último nó não estiver ocupado o último espaço não há de um realloc, a fila não está cheia.
 		
 		else {
 			NO **aux;
@@ -111,7 +112,7 @@ bool fila_cheia_aumentar(FILA *f){ //Não precisamos passar ponteiro de ponteiro
     return true;
 }
 
-void fila_diminuir(FILA *f){
+void fila_diminuir(FILA *f){ //Dividi o tamanho da fila por 2 a depender da última posição ocupada
 	if (f->tamanho >= TAM_INICIAL*2 && (f->final) < (f->tamanho/2)) { //Se o espaço na heap não for mais necessário, um nível é removido.
 			f->tamanho /= 2;
 			f->heap = (NO**) realloc(f->heap, f->tamanho * sizeof(NO*));
@@ -131,11 +132,11 @@ void fila_fix_up(FILA *f){
 	if(f == NULL) return;
 
 	uint posicao_atual = f->final-1; //f->final aponta para o próximo a ser ocupado, final-1 para última posição ocupada
-	uint posicao_pai = pai(posicao_atual); //Fórmula para o pai
+	uint posicao_pai = pai(posicao_atual); 
 	
 	while((posicao_atual != 0) && fila_checa_prioridade(f->heap[posicao_atual], f->heap[posicao_pai])){
 
-		fila_swap_item(&(f->heap[posicao_atual]), &(f->heap[posicao_pai])); //Enquanto o nó inserido não for a raiz e seu pai tiver mePACIENTEr prioridade, ele é trocado de posição com seu pai.
+		fila_swap_no(&(f->heap[posicao_atual]), &(f->heap[posicao_pai])); //Enquanto o nó inserido não for a raiz e seu pai tiver menor prioridade, ele é trocado de posição com seu pai.
 		posicao_atual = posicao_pai; //Indo para a posição do pai
 		posicao_pai = pai(posicao_atual); //Atualizando o pai
 
@@ -167,7 +168,7 @@ void fila_fix_down(FILA* f){
 	            break; //Se o índice não foi atualizado, então o nó está na posição correta.
 	        }
 	        
-	        fila_swap_item(&f->heap[posicao_atual], &f->heap[maior_prioridade]); //Troca-se o nó de posição com o filho de maior prioridade.
+	        fila_swap_no(&f->heap[posicao_atual], &f->heap[maior_prioridade]); //Troca-se o nó de posição com o filho de maior prioridade.
 	        posicao_atual = maior_prioridade; //A posição atual do nó é atualizada.
 	}
 	
@@ -177,9 +178,10 @@ void fila_fix_down(FILA* f){
 /*===============================================================================*/
 //Inserção
 
-bool fila_inserir_item(FILA* f, NO *item){
-	if(f != NULL && item != NULL){
-		f->heap[f->final] = item;
+bool fila_inserir_no(FILA* f, NO *node){
+	if(f != NULL && node != NULL){
+		f->heap[f->final] = node;
+		paciente_set_esta_fila(node->p, true); //Indica que o paciente está na fila
 		f->contador++;
 		f->final++; //Necessário incrementar primeiro
 		fila_fix_up(f);
@@ -189,12 +191,12 @@ bool fila_inserir_item(FILA* f, NO *item){
 }
 
 bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
-	if (!fila_cheia_aumentar(f)) { //Checa se a fila está cheia e aumenta seu tamanho se necessário para a PACIENTEva inserção
+	if (!fila_cheia_aumentar(f)) { //Checa se a fila está cheia e aumenta seu tamanho se necessário para a nova inserção
 		
-		NO* novo = fila_criar_item(p, urgencia, f->contador);
+		NO* novo = fila_criar_no(p, urgencia, f->contador);
 		if(novo == NULL) return false; //Falha na alocação do novo nó; A fila pode continuar do mesmo já possivelmente o espaço será usada depois
 				
-		fila_inserir_item(f, novo); //Não preciso olhar para o retorPACIENTE, pois aqui temos a garantia que n != NULL e f != NULL
+		fila_inserir_no(f, novo); //Não preciso olhar para o retorno, pois aqui temos a garantia que n != NULL e f != NULL
 		return true;
 	}
 	return false;
@@ -203,37 +205,34 @@ bool fila_inserir(FILA *f, PACIENTE *p, char urgencia){
 /*===============================================================================*/
 //Funções de remover
 
-NO* fila_remover_item(FILA* f){ //O mesmo que fila_remover, porém retorna o nó a ser removido
+NO* fila_remover_no(FILA* f){ //O mesmo que fila_remover, porém retorna o nó a ser removido
 	
-	NO *item = NULL;
+	NO *node = NULL;
 
 	if (!fila_vazia(f)) {
 
-		fila_swap_item(&f->heap[0], &f->heap[f->final-1]);
-		item = f->heap[f->final-1];
-		f->final--; //Isso basta para que o último valor não seja mais considerado da heap
+		fila_swap_no(&f->heap[0], &f->heap[f->final-1]);
+		node = f->heap[f->final-1];
+		paciente_set_esta_fila(node->p, false); //Indicando que o paciente não está mais na fila
+		f->final--; //Isso basta para que o último valor não seja mais considerado da heap, sem apagar o nó
 
 		fila_fix_down(f);
 		
-		if (f->tamanho >= 200 && (f->final) < (f->tamanho/2)) { //Se o espaço na heap não for mais necessário, um nível é removido.
-			f->tamanho /= 2;
-			f->heap = (NO**)realloc(f->heap, f->tamanho * sizeof(NO*));
-		}		
-
+		fila_diminuir(f);	
 	}
 
-	return item;
+	return node;
 }
 
-//Remoção
 PACIENTE *fila_remover(FILA *f){
 
 	if (!fila_vazia(f)) {
 
 		PACIENTE *p = f->heap[0]->p; //Sempre se remove a raiz (o primeira da fila)
-		fila_swap_item(&(f->heap[0]), &(f->heap[f->final-1]));
+		fila_swap_no(&(f->heap[0]), &(f->heap[f->final-1]));
+		paciente_set_esta_fila(p, false); //Indicando que o paciente não está mais na fila
+		
 		free(f->heap[f->final-1]); //Só apaga o nó e não o paciente p nele, já que iremos retorná-lo
-
 		f->heap[f->final-1] = NULL;
 		f->final--;
 		fila_fix_down(f);
@@ -257,24 +256,24 @@ void fila_listar(FILA **f){
 	}
 
 	FILA* aux = fila_criar();
-	NO* item;
+	NO* node;
 
 	if(aux != NULL){
 		printf("#     | URGÊNCIA | CHEGADA | NOME\n");
 		while(!fila_vazia(*f)){
-			item = fila_remover_item(*f); //Não apaga o item
+			node = fila_remover_no(*f); //Não apaga o node
 
-			if(item == NULL) continue; //Em caso de erro
+			if(node == NULL) continue; //Em caso de erro
 
-			fila_cheia_aumentar(aux); //Aumentar o aux se necessário
+			fila_cheia_aumentar(aux); //Aumentar o aux se necessário (função fila_inserir_no não faz isso)
 
-			fila_inserir_item(aux, item); //Copia o exato mesmo item para aux
-			printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id(item->p), item->urgencia, item->ordem_chegada+1, paciente_get_nome(item->p));
+			fila_inserir_no(aux, node); //Copia o exato mesmo node para aux
+			printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id(node->p), node->urgencia, node->ordem_chegada+1, paciente_get_nome(node->p));
 		}
 		
 		printf("\n");
 
-		free((*f)->heap); //Não tem mais nós PACIENTE array da heap original
+		free((*f)->heap); //Não tem mais nós no array da heap original
 
 		free(*f); //Desalocando a struct do array original
 
@@ -282,7 +281,9 @@ void fila_listar(FILA **f){
 	}
 }
 
+/*===============================================================================*/
 //Funções de carregamento e salvamento
+
 FILA *fila_carregar(REGISTRO* r) {
 
 	/*
@@ -329,14 +330,14 @@ FILA *fila_carregar(REGISTRO* r) {
 bool fila_salvar(FILA **f) {
 
 	if(f != NULL && *f != NULL){
-		NO* item;
+		NO* node;
 		FILE* fp = fopen("fila.txt", "w");
 		if(!fp) return false; //Erro na abertura de arquivo
 
-		while (!fila_vazia(*f)){ //Ficar retirando os valores e colocando PACIENTE arquivo
-			item = fila_remover_item(*f);
-			fprintf(fp, "%d\n%c\n\n", paciente_get_id(item->p), item->urgencia);
-			free(item); //Não apaga o paciente, pois o registro já responsável por isso
+		while (!fila_vazia(*f)){ //Ficar retirando os valores e colocando no arquivo
+			node = fila_remover_no(*f);
+			fprintf(fp, "%d\n%c\n\n", paciente_get_id(node->p), node->urgencia);
+			free(node); //Não apaga o paciente, pois o registro já responsável por isso
 		}
 
 		fclose(fp); //Executa o flush

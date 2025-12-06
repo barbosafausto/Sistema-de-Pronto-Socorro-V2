@@ -1,6 +1,8 @@
 #ifndef REGISTRO_H
   #define REGISTRO_H
   
+  #include <stdlib.h>
+  #include <stdio.h>
   #include "../TAD_Paciente/paciente.h"
 
   /**
@@ -35,13 +37,10 @@
 
   //"registro_recuperar_no()" (auxiliar) busca pelo paciente no registro e retorna um nó.
   PACIENTE* registro_recuperar(REGISTRO *r, int id); //*
-
-  //Atualiza o nó de um paciente quando ele é removido da fila.
-  bool registro_atualiza(REGISTRO *r, int id);
   
   //Retorna 0, se teve sucesso na inserção; 1, se o valor já está no registro; 2, se, além do registro, também já estiver na fila
   //Usa registro_inserir_no() como função auxiliar para inserir no local certo.
-  int_8 registro_inserir(REGISTRO* r, PACIENTE* p, bool esta_na_fila);  
+  int_8 registro_inserir(REGISTRO* r, PACIENTE* p);  
 
 
   //Usa a função registro_remover_no() para buscar o nó e removê-lo
@@ -61,6 +60,6 @@
 
   //Funções úteis para testes
   //Usa a função imprimir_no_visual (auxiliar)
-  void imprimir_arvore_visual(REGISTRO* r);
+  void registro_imprimir_arvore_visual(REGISTRO* r);
     
 #endif

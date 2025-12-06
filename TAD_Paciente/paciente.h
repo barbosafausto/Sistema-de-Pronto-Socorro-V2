@@ -15,5 +15,7 @@
 
     char* paciente_get_nome(PACIENTE* p);
     int paciente_get_id(PACIENTE* p); //Essa função retornará -1 se o ponteiro for inválido
-    
+    bool paciente_get_esta_fila(PACIENTE *p); //Essa função retornará false se o ponteiro for inválido
+
+    void paciente_set_esta_fila(PACIENTE *p, bool esta_fila);
 #endif

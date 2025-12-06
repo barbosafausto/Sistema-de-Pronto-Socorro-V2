@@ -14,7 +14,7 @@ bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia
   PACIENTE *p = paciente_criar(nome, id);
   
   //Se ele estiver na fila, então não haverá inserção
-  int feedback = registro_inserir(r, p, true);
+  int feedback = registro_inserir(r, p);
   if (feedback == ESTA_FILA) return false;
     
   //Caso ele não esteja na fila, inserimos

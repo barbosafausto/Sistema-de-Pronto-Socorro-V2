@@ -11,15 +11,19 @@ int main(void){
     PACIENTE *p3 = paciente_criar("Maria", 4);
     PACIENTE *p4 = paciente_criar("Luiz", 9);
 
-    registro_inserir(r, p1, true);
-    registro_inserir(r, p2, true);
-    registro_inserir(r, p3, true);
-    registro_inserir(r, p4, true);
+    registro_inserir(r, p1);
+    registro_inserir(r, p2);
+    registro_inserir(r, p3);
+    registro_inserir(r, p4);
+
+    registro_listar(r);
 
     FILA *f = fila_carregar(r);
     if(f != NULL) printf("ok!\n");
 
     fila_listar(&f);
+    registro_listar(r);
+
 
     while (!fila_vazia(f)) {
 
@@ -30,11 +34,12 @@ int main(void){
 
     }
 
-    //free(f); //Não está liberando o array
+    fila_listar(&f);
+    registro_listar(r);
 
     fila_salvar(&f);
     registro_apagar(&r);
-    if (registro_vazio(r)) printf("vazio, ok!\n");
+    if (registro_vazio(r)) printf("vazio, ok!\n");*/
 
 
     /* TESTES DAS FUNÇÕES DA FILA
@@ -81,9 +86,9 @@ int main(void){
    
     fila_listar(&f); //Deve escrever: A fila está vazia
     
-    fila_salvar(&f);*/
+    fila_salvar(&f);//*/
 
-    /*TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
+    //TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
     FILA* f = fila_criar();
     REGISTRO* r = registro_criar();
     PACIENTE* p;
@@ -95,10 +100,11 @@ int main(void){
     for(int i = 0; i < n; i++){
         scanf("%d %c %100[^\n]", &id, &urg, nome);
         p = paciente_criar(nome, id);
-        registro_inserir(r, p, true);
+        registro_inserir(r, p);
         fila_inserir(f, p, urg);
         fila_listar(&f);
     }
+    registro_listar(r);
 
     //Remoções
     scanf("%d", &m);
@@ -106,8 +112,9 @@ int main(void){
       fila_remover(f);
       fila_listar(&f);
     }
+    registro_listar(r);
 
     fila_salvar(&f);
-    registro_apagar(&r);*/
+    registro_apagar(&r);//*/
     return 0;
 }

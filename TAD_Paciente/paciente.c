@@ -4,6 +4,7 @@
 
 struct paciente {
     char* nome;
+    bool esta_fila; //Indica se o paciente está também na fila
     int id;
 };
 
@@ -19,6 +20,8 @@ PACIENTE* paciente_criar(char* nome, int id) {
         strcpy(p->nome, nome);
 
         p->id = id;
+
+        p->esta_fila = false; //Consideramos inicialmente que o paciente não está fila, esse valor será alterado em funções do TAD_Fila
 
         return p;
     }
@@ -60,4 +63,13 @@ int paciente_get_id(PACIENTE* p) {
     }
 
     return -1; //Retorna ID inválido caso o paciente não exista.
+}
+
+bool paciente_get_esta_fila(PACIENTE *p){
+    if(p != NULL) return p->esta_fila;
+    return false;
+}
+
+void paciente_set_esta_fila(PACIENTE *p, bool esta_fila){
+    if(p != NULL) p->esta_fila = esta_fila;
 }

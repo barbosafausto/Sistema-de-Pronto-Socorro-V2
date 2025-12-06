@@ -1,10 +1,9 @@
-#include <stdio.h>
 #include "registro.h"
 
 int main(void) {
 
   
-  /*TESTE DE INSERÇÃO e REMOÇÃO*/
+  /*TESTE DE INSERÇÃO e REMOÇÃO
 
   int n, id;
   PACIENTE *p;
@@ -26,14 +25,9 @@ int main(void) {
     printf("ID: ");
     scanf(" %d", &id);
 
-    /*
-    printf("ESTÁ NA FILA[S/N]: ");
-    scanf(" %c", &esta_na_fila);
-    */
-
     p = paciente_criar(nome, id);
 
-    if(!(verifica = registro_inserir(r, p, true)))
+    if(!(verifica = registro_inserir(r, p)))
       printf("Paciente adicionado.\n\n");
 
     else if (verifica == 1) printf("Falha, está no registro.\n\n"), paciente_apagar(&p);
@@ -44,7 +38,7 @@ int main(void) {
     printf("\n\n");
   }
   
-  imprimir_arvore_visual(r);
+  registro_imprimir_arvore_visual(r);
 
 
   //Testes de remoção
@@ -56,7 +50,11 @@ int main(void) {
 
 
   registro_salvar(&r);
-  if (r == NULL) printf("Registro salvo e apagado.\n");
+  if (r == NULL) printf("Registro salvo e apagado.\n");*/
+
+  REGISTRO *r = registro_carregar();
+  registro_listar(r);
+  registro_salvar(&r);
 
   return 0;
 }
