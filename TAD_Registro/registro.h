@@ -4,21 +4,13 @@
   #include <stdlib.h>
   #include <stdio.h>
   #include "../TAD_Paciente/paciente.h"
-
-  /**
-  Funções com "//" em seu final ainda não foram implementadas.
-  Existem funções que serão necessárias mas que ainda não foram declaradas/o usuário não terá acesso, como as funções de rotação da AVL.
-  **/
   
   typedef struct registro_ REGISTRO;
   typedef char int_8;
   
+  //Funções comentadas neste .h são funções auxiliares das quais o cliente não tem acesso. Estão explicitadas aqui apenas para explicar o funcionamento das outras funções.
+  
   REGISTRO* registro_criar(void);
-
-  //As funções abaixo talvez sejam removidas do projeto posteriormente.
-  //registro_criar_no(): cria um nó e inicializa os dados
-  //no_get_paciente(): pega o paciente de um nó
-  //no_apagar(): apagar um nó e seu paciente 
   
   bool registro_vazio(REGISTRO* r);
   bool registro_cheio(REGISTRO* r);
@@ -45,17 +37,15 @@
 
   //Usa a função registro_remover_no() para buscar o nó e removê-lo
   //Usa a função troca_max_esq() para substituir o nó quando necessário
-  PACIENTE* registro_remover(REGISTRO* r, int id); //*
+  PACIENTE* registro_remover(REGISTRO* r, int id);
  
   
   //Percorre o registro em-ordem mostrando seus elementos
   //Usa a função auxiliar registro_listar_no
   void registro_listar(REGISTRO*r); 
 
-
-  //As funções abaixo ainda serão implementadas
-  bool registro_salvar(REGISTRO** r); //*
-  REGISTRO* registro_carregar(void); //*
+  bool registro_salvar(REGISTRO** r);
+  REGISTRO* registro_carregar(void);
   
 
   //Funções úteis para testes

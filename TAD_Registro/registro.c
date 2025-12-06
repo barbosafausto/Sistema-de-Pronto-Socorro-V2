@@ -51,18 +51,6 @@ NO* registro_criar_no(PACIENTE* p){
   return node;
 }
 
-bool no_apagar(NO** node){
-
-  if (node != NULL && *node != NULL) {
-    paciente_apagar(&(*node)->p);
-    free(*node);
-    *node = NULL;
-    return true;
-  }
-
-  return false;
-}
-
 /*===============================================================================*/
 //Funções de cheio e vazio
 
@@ -101,7 +89,7 @@ NO* registro_apagar_no(NO* node){
     paciente_apagar(&(node->p));
     
     free(node);
-    node = NULL; //Para retornar NULL e o pai não ter mais acesso
+    node = NULL; //Para retornar NULL e atualizar o ponteiro do pai.
   }
 
   return node;
