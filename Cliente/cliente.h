@@ -5,10 +5,15 @@
     #include "../TAD_Fila/fila.h"
     #include "../TAD_Registro/registro.h"
     
+    #define NAO_ESTA 0
+    #define ESTA_REGISTRO 1
+    #define ESTA_FILA 2
+    #define REPETIDO 3
+
     bool inicializar(REGISTRO**r, FILA** f);
     void sair(REGISTRO** r, FILA** f);
     
-    bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);
+    int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);
     
     PACIENTE* dar_alta_ao_paciente(FILA* f);
     PACIENTE* remover_paciente(REGISTRO* r, int id);

@@ -69,7 +69,20 @@ int main() {
           else break;
         }
 
-				registrar_paciente(r, f, id, nome, urgencia);
+				int_8 feedback = registrar_paciente(r, f, id, nome, urgencia);
+
+        printf("--- Resultado do Registro ---\n");
+        if (feedback == NAO_ESTA) printf("Registro bem-sucedido.\nO paciente foi registrado e colocado na fila.\n");
+
+        else if (feedback == ESTA_REGISTRO) 
+          printf("O paciente já estava registrado.\nInserção na fila bem sucedida.");
+
+        else if (feedback == ESTA_FILA)
+          printf("Não há necessidade de registro.\nO paciente está registrado e também está na fila.\n");
+
+        else if (feedback == REPETIDO)
+          printf("Erro ao registrar paciente.\nJá existe um paciente com ID %d.\n", id);
+
 				break;
 
 
@@ -78,7 +91,7 @@ int main() {
 
 			case 2:
 				puts("--- Remover Paciente ---\n");
-				puts("ID do paciente falecido: ");
+				puts("ID do paciente: ");
 
 				while(!scanf(" %d", &id) || id < 1) {
 					

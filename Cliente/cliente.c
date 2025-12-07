@@ -1,9 +1,8 @@
 #include "cliente.h"
 #include <stdbool.h>
 
-#define NAO_ESTA 0
-#define ESTA_REGISTRO 1
-#define ESTA_FILA 2
+
+#define char int_8
 
 bool inicializar(REGISTRO** r, FILA** f){
   
@@ -25,7 +24,7 @@ void sair(REGISTRO** r, FILA** f){ //Deve ser nessa ordem, já que registro_salv
   registro_salvar(r); 
 }
     
-bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia) {
+int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia) {
 
   //Criação do paciente
   PACIENTE *p = paciente_criar(nome, id);
@@ -33,24 +32,31 @@ bool registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia
   
   //Se ele estiver na fila, então não haverá inserção
   int feedback = registro_inserir(r, &p);
-  if (feedback == ESTA_REGISTRO){ //Então ele não está na fila, precisa ser adicionado
-    fila_inserir(f, p, urgencia); //Nesse caso, p guarda o paciente 
-    paciente_apagar(&aux); //Apagando o paciente criado na linha 19
-    return false;
+
+  //Se os pacientes têm nomes distintos, porém com ID repetido, abortamos a operaçõa.
+  if (feedback == REPETIDO) {
+    
+    paciente_apagar(&p);
+    aux = NULL;
+    return feedback;
   }
 
+  //Se ele está na fila e no registro, não precisamos continuar
   if(feedback == ESTA_FILA){
     paciente_apagar(&aux); //Apagando o paciente criado na linha 19
-    return false;
+    return feedback;
   }
-    
-  //Caso ele não esteja na fila, inserimos
-  feedback = fila_inserir(f, p, urgencia);
 
-  if (!feedback) return false; //Se houver erros
+  //Se chegou aqui, o paciente está no registro ou não.
+  //De todo modo, ele será colocado na fila.
+  fila_inserir(f, p, urgencia); 
   
-  //Se chegou aqui, deu tudo certo.
-  return true;
+  //Se o paciente já está no registro, não precisamos alocar espaço adicional.
+  if (feedback == ESTA_REGISTRO){ 
+    paciente_apagar(&aux); 
+  }
+
+  return feedback;
 }
 
 PACIENTE* dar_alta_ao_paciente(FILA* f){

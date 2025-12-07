@@ -251,7 +251,7 @@ void fila_listar(FILA **f){
 	if(f == NULL || *f == NULL) return;
 
 	if(fila_vazia(*f)) {
-		printf("A fila está vazia!\n"); 
+		printf("A fila está vazia.\n"); 
 		return;
 	}
 

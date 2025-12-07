@@ -1,5 +1,7 @@
 #include "registro.h"
+#include "string.h"
 
+#define REPETIDO 3
 #define ESTA_FILA 2
 #define ESTA_REGISTRO 1
 #define NAO_ESTA 0
@@ -210,9 +212,17 @@ NO* registro_inserir_no(NO* node, PACIENTE** p, char* verifica){
     node->esq = registro_inserir_no(node->esq, p, verifica);
 
   else { //Se tem o mesmo id, não deve ser inserido: ID É ÚNICO
-    *p = node->p;
-    if(paciente_get_esta_fila(node->p)) (*verifica) = ESTA_FILA; //O paciente também já está na fila
-    else (*verifica) = ESTA_REGISTRO;
+
+    //Se existe, verificamos se é, de fato, o mesmo paciente (através do nome).
+    if (strcmp(paciente_get_nome(*p), paciente_get_nome(node->p)) != 0) 
+      *verifica = REPETIDO; //Se for diferente, erro: pacientes distintos com mesmo ID.
+
+    //Se for o mesmo, usamos o ponteiro original do paciente.
+    else {
+      *p = node->p;
+      if(paciente_get_esta_fila(node->p)) (*verifica) = ESTA_FILA; //O paciente também já está na fila
+      else (*verifica) = ESTA_REGISTRO;
+    }
     return node; //Começa a voltar na recursão sem perder os ponteiros; se não houve inserção não é necessário fazer balanceamento
   }
   
