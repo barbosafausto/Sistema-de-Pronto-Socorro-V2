@@ -206,22 +206,23 @@ PACIENTE* registro_recuperar(REGISTRO* r, int id) {
 /*===============================================================================*/
 //Funções de inserção de valor
 
-NO* registro_inserir_no(NO* node, PACIENTE* p, char* verifica){
+NO* registro_inserir_no(NO* node, PACIENTE** p, char* verifica){
   
   if(node == NULL) { //Chegou no fim da árvore
 
-    NO* novo = registro_criar_no(p); //Já inicializa a altura como 0
+    NO* novo = registro_criar_no(*p); //Já inicializa a altura como 0
     return novo;
   }
   
   //Organizamos os dados na árvore de acordo com o id dos pacientes
-  if (paciente_get_id(node->p) < paciente_get_id(p)) //Se id maior, insere-se na direita
+  if (paciente_get_id(node->p) < paciente_get_id(*p)) //Se id maior, insere-se na direita
     node->dir = registro_inserir_no(node->dir, p, verifica);
 
-  else if (paciente_get_id(node->p) > paciente_get_id(p)) //Se id menor, insere-se na esquerda
+  else if (paciente_get_id(node->p) > paciente_get_id(*p)) //Se id menor, insere-se na esquerda
     node->esq = registro_inserir_no(node->esq, p, verifica);
 
   else { //Se tem o mesmo id, não deve ser inserido: ID É ÚNICO
+    *p = node->p;
     if(paciente_get_esta_fila(node->p)) (*verifica) = ESTA_FILA; //O paciente também já está na fila
     else (*verifica) = ESTA_REGISTRO;
     return node; //Começa a voltar na recursão sem perder os ponteiros; se não houve inserção não é necessário fazer balanceamento
@@ -261,7 +262,7 @@ NO* registro_inserir_no(NO* node, PACIENTE* p, char* verifica){
   return node;
 }
 
-int_8 registro_inserir(REGISTRO* r, PACIENTE* p){
+int_8 registro_inserir(REGISTRO* r, PACIENTE** p){
   
   int_8 verifica = NAO_ESTA;
 
@@ -336,11 +337,11 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
 
   if (id < id_no) node->esq = registro_remover_no(node->esq, id, p);
   else if (id > id_no) node->dir = registro_remover_no(node->dir, id, p);
-  else { //É o no que deve ser removido
+  else { //É o nó que deve ser removido
 
     if (paciente_get_esta_fila(node->p)) {
 
-      printf("O paciente não pode ser removido, pois ele está na fila.\n");
+      //printf("O paciente não pode ser removido, pois ele está na fila.\n");
       return node;
     }
 
@@ -477,7 +478,7 @@ void registro_salvar_no(NO *raiz) {
   raiz->esq = raiz->dir = NULL; //Os filhos já foram apagados
 
   //Usando a opção append para escrever no final do arquivo, sem apagar nada
-  FILE *fp = fopen("registro.txt", "a");
+  FILE *fp = fopen("../TAD_Registro/registro.txt", "a");
 
   //Escrevendo no arquivo: id, nome, esta_na_fila
   fprintf(fp, "%d\n", paciente_get_id(raiz->p));
@@ -488,7 +489,7 @@ void registro_salvar_no(NO *raiz) {
   fclose(fp);
 
   //Desalocando tudo
-  paciente_apagar(&raiz->p);
+  paciente_apagar(&(raiz->p));
   free(raiz);
   raiz = NULL;
 
@@ -499,7 +500,7 @@ bool registro_salvar(REGISTRO **r) {
   if (!r || !*r) return false;
 
   //Abrindo o arquivo em modo de escrita para apagar o conteúdo que tem nele
-  FILE *fp = fopen("registro.txt", "w");
+  FILE *fp = fopen("../TAD_Registro/registro.txt", "w");
   fclose(fp);
 
   /*A lógica de salvamento será:
@@ -541,7 +542,7 @@ REGISTRO* registro_carregar(void){
     fgetc(fp); //Tira o \n
     p = paciente_criar(nome, id);
     
-    registro_inserir(r, p);
+    registro_inserir(r, &p);
     fgetc(fp); //Ignora o '\n' entre todos os pacientes.
   }
 

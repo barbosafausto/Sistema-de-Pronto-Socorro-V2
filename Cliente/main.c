@@ -2,7 +2,7 @@
 
 int main(void) {
 
-  REGISTRO *r = registro_criar();
+  /*REGISTRO *r = registro_criar();
   FILA *f = fila_criar();
 
   registrar_paciente(r, f, 1, "Fausto", '1');
@@ -14,16 +14,43 @@ int main(void) {
   registrar_paciente(r, f, 3, "Edu", '1');
   
   PACIENTE *p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
   p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
+  paciente_apagar(&p);
   p = fila_remover(f);
-  registro_atualiza(r, paciente_get_id(p));
+  paciente_apagr)&p
 
   remover_paciente(r, 2);
 
+  listar_pacientes(r);*/
+
+  /*REGISTRO *r = registro_criar();
+  FILA *f = fila_criar();
+  PACIENTE *p;
+  if(registrar_paciente(r, f, 1, "JOAO", '2')) printf("ok\n");
+  else printf("Deu ruim\n");
+  if(registrar_paciente(r, f, 1, "EDU", '2')) printf("ok\n");
+  else printf("Deu ruim\n");
+  if(registrar_paciente(r, f, 2, "EDU", '2')) printf("ok\n");
+  else printf("Deu ruim\n");
+  if(registrar_paciente(r, f, 3, "FAUSTO", '1')) printf("ok\n");
+  else printf("Deu ruim\n");
+  mostrar_fila_de_espera(&f);
   listar_pacientes(r);
 
+  if(p = remover_paciente(r, 3)) printf("%s morreu!\n", paciente_get_nome(p));
+  else printf("Está na fila!\n");
+
+  dar_alta_ao_paciente(f);
+
+  if(p = remover_paciente(r, 3)) printf("%s morreu!\n", paciente_get_nome(p));
+  else printf("Está na fila!\n");
+
+  paciente_apagar(&p);
+
+  mostrar_fila_de_espera(&f);
+  listar_pacientes(r);
+
+  sair(&r, &f);*/
 
   return 0;
 }
