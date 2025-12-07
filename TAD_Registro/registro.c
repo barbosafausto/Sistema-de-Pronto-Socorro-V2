@@ -426,6 +426,10 @@ void registro_listar_no(NO* node){ //Percorre em ordem
 }
 
 void registro_listar(REGISTRO* r){
+  
+  if (!r) printf("Erro: ponteiro de registro inválido.\n");
+
+  if (registro_vazio(r)) printf("Não há pacientes registrados.\n");
 
   if(r != NULL){
 

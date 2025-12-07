@@ -1,58 +1,198 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "cliente.h"
+#define TAM_MAX 101
 
-int main(void) {
-
-  /*REGISTRO *r = registro_criar();
-  FILA *f = fila_criar();
-
-  printf("Oi\n");
-  REGISTRO *r;
-  FILA *f;
-
-  if (!inicializar(&r, &f)){
-    printf("Erro ao inicializar os dados!\n");
-  }
-  
-  listar_pacientes(r);
-  
-  PACIENTE *p = fila_remover(f);
-  p = fila_remover(f);
-  paciente_apagar(&p);
-  p = fila_remover(f);
-  paciente_apagr)&p
-
-  remover_paciente(r, 2);
-
-  listar_pacientes(r);*/
-
-  /*REGISTRO *r = registro_criar();
-  FILA *f = fila_criar();
-  PACIENTE *p;
-  if(registrar_paciente(r, f, 1, "JOAO", '2')) printf("ok\n");
-  else printf("Deu ruim\n");
-  if(registrar_paciente(r, f, 1, "EDU", '2')) printf("ok\n");
-  else printf("Deu ruim\n");
-  if(registrar_paciente(r, f, 2, "EDU", '2')) printf("ok\n");
-  else printf("Deu ruim\n");
-  if(registrar_paciente(r, f, 3, "FAUSTO", '1')) printf("ok\n");
-  else printf("Deu ruim\n");
-  mostrar_fila_de_espera(&f);
-  listar_pacientes(r);
-
-  if(p = remover_paciente(r, 3)) printf("%s morreu!\n", paciente_get_nome(p));
-  else printf("Está na fila!\n");
-
-  dar_alta_ao_paciente(f);
-
-  if(p = remover_paciente(r, 3)) printf("%s morreu!\n", paciente_get_nome(p));
-  else printf("Está na fila!\n");
-
-  paciente_apagar(&p);
-
-  mostrar_fila_de_espera(&f);
-  listar_pacientes(r);
-
-  sair(&r, &f);*/
-
-  return 0;
+void menu(){
+	puts("=-=-=-=-=-HOSPITAL-=-=-=-=-=\n\n");
+	puts("Operações: \n");
+	puts(" [1] Registrar Paciente\n");
+	puts(" [2] Remover Paciente\n");
+	puts(" [3] Listar Pacientes\n");
+	puts(" [4] Buscar Paciente por ID\n");
+	puts(" [5] Mostrar Fila de Espera\n");
+	puts(" [6] Dar Alta ao Paciente\n");
+	puts(" [7] Sair\n");
+	puts("Selecione uma: ");
 }
+
+void urgencias() {
+
+	puts("=-=-=-=-=-URGÊNCIAS-=-=-=-=-=\n\n");
+  puts("Escolha a urgência deste paciente:\n") ;
+
+	puts(" [1] Emergência: caso gravíssimo com risco de morte.\n");
+	puts(" [2] Muito urgente: grave e risco de evoluir para morte.\n");
+	puts(" [3] Urgente: gravidade moderada e necessidade de atendimento médico, sem risco imediato.\n");
+	puts(" [4] Pouco Urgente: poderia ser atendido numa Unidade Básica.\n");
+	puts(" [5] Não Urgência: risco algum (resfriados, espinho no pé, etc.)\n");
+}
+
+bool inicializar(REGISTRO **r, FILA **f) {
+  *r = registro_carregar(); 
+  *f = fila_carregar(*r);
+}
+
+int main() {
+	int op = 0, id;
+	char nome[TAM_MAX], urgencia = '0';
+
+	REGISTRO *r;
+	FILA *f;
+	PACIENTE *p;
+	inicializar(&r, &f);
+
+	while(1){
+		system("clear");
+		menu();
+		
+		if (!scanf(" %d", &op)) op = 0;
+		printf("\n");
+
+		switch(op){
+
+			case 1:
+				puts("--- Registro de Paciente ---\n");
+				puts("ID do novo paciente: ");
+
+				while(!scanf(" %d", &id) || id < 1) {
+					
+					getchar();
+				}
+
+				puts("Nome do paciente: ");
+				scanf(" %100[^\n]", nome);
+
+        urgencias();
+        while (true) {
+
+          scanf(" %c", &urgencia);
+
+          if (urgencia < '1' || urgencia > '5') 
+            printf("Por favor, escolha uma urgência válida.\n");
+
+          else break;
+        }
+
+				registrar_paciente(r, f, id, nome, urgencia);
+				break;
+
+
+
+        
+
+			case 2:
+				puts("--- Remover Paciente ---\n");
+				puts("ID do paciente falecido: ");
+
+				while(!scanf(" %d", &id) || id < 1) {
+					
+					getchar();
+				}
+
+				p = remover_paciente(r, id);
+
+        if (!p) {
+          
+          printf("Falha ao remover o paciente de ID %d\n", id);
+          printf("Por favor, verifique se ele está registrado ou se ele está na fila.\n");
+        }
+
+        else {
+          printf("--- Paciente Removido com Sucesso ---\n");
+          printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); //Imprime os números de forma alinhada
+
+        }
+
+        paciente_apagar(&p); //Nãoooo pode esquecer
+				break;
+
+
+
+
+			case 3:
+				puts("--- Lista de Pacientes ---\n");
+
+        registro_listar(r);
+				break;
+
+
+
+
+			case 4:
+				puts("--- Buscar Paciente ---\n");
+				puts("ID do paciente: ");
+
+				while(!scanf(" %d", &id) || id < 1) {
+					
+					getchar();
+				}
+
+				p = buscar_paciente_por_ID(r, id);
+
+        if (p == NULL){
+          printf("--- Nenhum paciente com o ID %d foi encontrado no registro. ---\n", id);
+        }
+        else {
+          printf("Paciente encontrado.\n");
+          printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); //Imprime os números de forma alinhada
+        }
+        
+        break;
+       
+        
+
+
+			case 5:
+				puts("--- Mostrar Fila de Espera ---\n");
+
+        mostrar_fila_de_espera(f);
+
+				break;
+
+
+
+
+
+
+			case 6:
+				puts("--- Dar Alta ao Paciente ---\n");
+
+        p = dar_alta_ao_paciente(f);
+
+        if (!p) printf("Não foi possível dar alta a um paciente, pois a fila está vazia.\n");
+        else {
+          printf("O seguinte paciente recebeu alta:\n");
+          printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); 
+        }
+
+        paciente_apagar(&p);
+				break;
+
+
+
+
+
+
+			case 7:
+				sair(&r, &f);
+				puts("Registros e Fila salvos!\n");
+				break;
+
+
+
+
+			default:
+				puts("Operação inválida!\n");
+		}
+
+		if (op == 7) break;
+
+		printf("\n\nPressione enter para continuar...");
+		getchar(); //pega o enter do scanf
+		getchar(); //Pegar o enter do "Pressione enter para continuar..."
+	}
+	
+	return 0;
+}
+

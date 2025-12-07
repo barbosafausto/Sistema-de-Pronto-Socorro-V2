@@ -66,11 +66,6 @@ PACIENTE* remover_paciente(REGISTRO* r, int id){
 PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id){
   
   PACIENTE* p = registro_recuperar(r, id); //Esta função realiza uma busca no registro e retorna ponteiro para paciente.
-  if (p == NULL){
-    printf("-_-_-_-_-_-_-_-_-_-_-_-\nNenhum paciente com o ID %d foi encontrado no registro.\n-_-_-_-_-_-_-_-_-_-_-_-\n\n", id);
-    return NULL;
-  }
-  printf("-_-_-_-_-_-_-_-_-_-_-_-\nO seguinte paciente foi encontrado no registro:\nID - %d\nNome - %s\n-_-_-_-_-_-_-_-_-_-_-_-\n\n", id, paciente_get_nome(p));
   return p;
 }
     
