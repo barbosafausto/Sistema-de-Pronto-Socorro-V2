@@ -120,8 +120,16 @@ int registro_altura_no(NO *A) {
   return A->altura;
 }
 
+
 /*===============================================================================*/
-//Funções de rotação
+/*Calcula o Fator de Balanceamento do nó A*/
+
+int registro_calcular_fb(NO* A){
+  return (registro_altura_no(A->esq) - registro_altura_no(A->dir));
+}
+
+/*===============================================================================*/
+//Funções de rotação e balanceamento
 
 NO* registro_rodar_esquerda(NO* A) {
 
@@ -162,11 +170,38 @@ NO* registro_rodar_dir_esq(NO* A) {
   return registro_rodar_esquerda(A);
 }
 
-/*===============================================================================*/
-/*Calcula o Fator de Balanceamento do nó A*/
+NO *registro_balanceia(NO *node) {
 
-int registro_calcular_fb(NO* A){
-  return (registro_altura_no(A->esq) - registro_altura_no(A->dir));
+  if (!node) return NULL;
+
+  node->altura = max(registro_altura_no(node->esq), registro_altura_no(node->dir)) + 1;
+
+  //Rebalanceamento, se necessário
+  int fb = registro_calcular_fb(node);
+  
+  //Rodar direita
+  if (fb == 2) {
+
+    //Rotação simples
+    if (registro_calcular_fb(node->esq) >= 0)
+      node = registro_rodar_direita(node);
+
+    //Rotação dupla
+    else node = registro_rodar_esq_dir(node);
+  }
+
+  //Rodar esquerda
+  else if (fb == -2) {
+
+    //Rotação simples
+    if (registro_calcular_fb(node->dir) <= 0)
+      node = registro_rodar_esquerda(node);
+
+    //Rotação dupla
+    else node = registro_rodar_dir_esq(node);
+  }
+
+  return node;
 }
 
 /*===============================================================================*/
@@ -226,38 +261,7 @@ NO* registro_inserir_no(NO* node, PACIENTE** p, char* verifica){
     return node; //Começa a voltar na recursão sem perder os ponteiros; se não houve inserção não é necessário fazer balanceamento
   }
   
-  node->altura = max(registro_altura_no(node->dir),registro_altura_no(node->esq))+1; //Atualizando altura
-
-  int fb = registro_calcular_fb(node); //Para verificação do balanceamento
-
-  if(fb >= 2) { //Está pendendo para esquerda
-
-    if(registro_calcular_fb(node->esq) < 0){ //E o filho esquerdo pendendo para a direita 
-      //printf("Rotação esquerda-direita."); //Debug
-      node = registro_rodar_esq_dir(node);
-    }
-
-    else{
-      //printf("Rotação direita."); //Debug
-      node = registro_rodar_direita(node);
-    }
-  }
-
-  else if(fb <= -2){ //Está pendendo para direita
-
-    if(registro_calcular_fb(node->dir) > 0){ //E o filho direito pendendo para a esquerda
-      //printf("Rotação direita-esquerda."); //Debug
-      node = registro_rodar_dir_esq(node);
-    }
-
-    else{
-      //printf("Rotação esquerda."); //Debug
-      node = registro_rodar_esquerda(node);
-    }
-  }
-  printf("\n");
-  
-  return node;
+  return registro_balanceia(node);
 }
 
 int_8 registro_inserir(REGISTRO* r, PACIENTE** p){
@@ -295,36 +299,8 @@ NO* troca_max_esq(NO *troca, NO *raiz, PACIENTE** p) {
   }
 
   //printf("Atualmente no nó %d, voltando.\n", paciente_get_id(troca->p));
-  //Atualização da altura
-  troca->altura = max(registro_altura_no(troca->esq), registro_altura_no(troca->dir)) + 1;
 
-  int fb = registro_calcular_fb(troca);
-
-  //printf("Fator de balanceamento: %d\n", fb);
-
-  //Rodar direita
-  if (fb == 2) {
-
-    //Rotação simples
-    if (registro_calcular_fb(troca->esq) >= 0)
-      troca = registro_rodar_direita(troca); //printf("Rotação direita.\n");
-
-    //Rotação dupla
-    else troca = registro_rodar_esq_dir(troca); //printf("Rotação esquerda-direita.\n");
-  }
-
-  //Rodar esquerda
-  else if (fb == -2) {
-
-    //Rotação simples
-    if (registro_calcular_fb(troca->dir) <= 0)
-      troca = registro_rodar_esquerda(troca); //printf("Rotação esquerda.\n");
-
-    //Rotação dupla
-    else troca = registro_rodar_dir_esq(troca); //printf("Rotação direita-esquerda.\n");
-  }
-
-  return troca;
+  return registro_balanceia(troca);
 }
 
 NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
@@ -376,38 +352,7 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
     }
   }
 
-  if (node) { //Verificação para caso a árvore tivesse apenas um nó
-
-    node->altura = max(registro_altura_no(node->esq), registro_altura_no(node->dir)) + 1;
-
-    //Rebalanceamento, se necessário
-    int fb = registro_calcular_fb(node);
-    
-    //Rodar direita
-    if (fb == 2) {
-
-      //Rotação simples
-      if (registro_calcular_fb(node->esq) >= 0)
-        node = registro_rodar_direita(node), printf("Rotação direita.\n");
-
-      //Rotação dupla
-      else node = registro_rodar_esq_dir(node), printf("Rotação esquerda-direita.\n");
-    }
-
-    //Rodar esquerda
-    else if (fb == -2) {
-
-      //Rotação simples
-      if (registro_calcular_fb(node->dir) <= 0)
-        node = registro_rodar_esquerda(node), printf("Rotação esquerda.\n");
-
-      //Rotação dupla
-      else node = registro_rodar_dir_esq(node), printf("Rotação direita-esquerda.\n");
-    }
-
-  }
-
-  return node;
+  return registro_balanceia(node);
 }
 
 
