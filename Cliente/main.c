@@ -18,7 +18,7 @@ void menu(){
 
 void urgencias() {
 
-	puts("=-=-=-=-=-URGÊNCIAS-=-=-=-=-=\n\n");
+	puts("=-=-=-=-=-URGÊNCIAS-=-=-=-=-=\n");
   puts("Escolha a urgência deste paciente:\n") ;
 
 	puts(" [1] Emergência: caso gravíssimo com risco de morte.\n");
@@ -26,11 +26,6 @@ void urgencias() {
 	puts(" [3] Urgente: gravidade moderada e necessidade de atendimento médico, sem risco imediato.\n");
 	puts(" [4] Pouco Urgente: poderia ser atendido numa Unidade Básica.\n");
 	puts(" [5] Não Urgência: risco algum (resfriados, espinho no pé, etc.)\n");
-}
-
-bool inicializar(REGISTRO **r, FILA **f) {
-  *r = registro_carregar(); 
-  *f = fila_carregar(*r);
 }
 
 int main() {
@@ -146,7 +141,7 @@ int main() {
 			case 5:
 				puts("--- Mostrar Fila de Espera ---\n");
 
-        mostrar_fila_de_espera(f);
+        mostrar_fila_de_espera(&f);
 
 				break;
 

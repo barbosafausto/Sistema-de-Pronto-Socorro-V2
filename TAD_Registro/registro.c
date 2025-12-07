@@ -514,7 +514,7 @@ bool registro_salvar(REGISTRO **r) {
 
 REGISTRO* registro_carregar(void){
     
-  FILE* fp = fopen("registro.txt", "r");
+  FILE* fp = fopen("../TAD_Registro/registro.txt", "r");
   REGISTRO* r = registro_criar();
   if (fp == NULL || r == NULL){
     fclose(fp);
@@ -538,5 +538,5 @@ REGISTRO* registro_carregar(void){
     fgetc(fp); //Ignora o '\n' entre todos os pacientes.
   }
 
-  return NULL;
+  return r;
 }

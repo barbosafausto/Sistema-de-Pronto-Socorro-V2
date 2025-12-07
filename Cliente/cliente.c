@@ -5,7 +5,7 @@
 #define ESTA_REGISTRO 1
 #define ESTA_FILA 2
 
-bool inicializar(REGISTRO**r, FILA** f){
+bool inicializar(REGISTRO** r, FILA** f){
   
   *r = registro_carregar();
   if (*r == NULL){
