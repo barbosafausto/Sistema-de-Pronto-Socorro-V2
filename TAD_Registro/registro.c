@@ -427,16 +427,15 @@ void registro_listar_no(NO* node){ //Percorre em ordem
 
 void registro_listar(REGISTRO* r){
   
-  if (!r) printf("Erro: ponteiro de registro inválido.\n");
-
-  if (registro_vazio(r)) printf("Não há pacientes registrados.\n");
-
-  if(r != NULL){
-
-    printf("#     | ESTÁ NA FILA |NOME \n");
-    registro_listar_no(r->raiz); 
-    printf("\n");
+  if (registro_vazio(r)) {
+    
+    printf("Não há pacientes registrados.\n");
+    return;
   }
+
+  printf("#     | ESTÁ NA FILA |NOME \n");
+  registro_listar_no(r->raiz); 
+  printf("\n");
 }
 
 void registro_imprimir_no_visual(NO *raiz, int nivel) { //Imprime a árvore de forma identada

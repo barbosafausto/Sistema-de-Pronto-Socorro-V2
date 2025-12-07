@@ -161,7 +161,6 @@ int main() {
           printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); 
         }
 
-        paciente_apagar(&p);
 				break;
 
 
