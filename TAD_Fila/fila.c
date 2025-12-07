@@ -228,7 +228,6 @@ NO* fila_remover_no(FILA* f){ //O mesmo que fila_remover, porém retorna o nó a
 PACIENTE *fila_remover(FILA *f){
 
 	if (!fila_vazia(f)) {
-
 		PACIENTE *p = f->heap[0]->p; //Sempre se remove a raiz (o primeira da fila)
 		fila_swap_no(&(f->heap[0]), &(f->heap[f->final-1]));
 		paciente_set_esta_fila(p, false); //Indicando que o paciente não está mais na fila
@@ -297,7 +296,7 @@ FILA *fila_carregar(REGISTRO* r) {
 	...
 	*/
 
-	FILE *fp = fopen("fila.txt", "r");
+	FILE *fp = fopen("../TAD_Fila/fila.txt", "r");
 	if (!fp) return NULL;
 	
 	FILA *f = fila_criar();
@@ -320,6 +319,7 @@ FILA *fila_carregar(REGISTRO* r) {
 		if(info != '1' && info != '2' && info != '3' && info != '4' && info != '5') info = '5'; //Se a leitura da urgência falhou, atribuimos a menor urgência, mantendo a prioridade dos pacientes em estado mais crítico
 
 		//Com isso, fazemos a inserção na fila de prioridade
+		if(p == NULL) continue; //Não insere pacientes com erro na fila
 		fila_inserir(f, p, info);
 
 	}
@@ -332,7 +332,7 @@ bool fila_salvar(FILA **f) {
 
 	if(f != NULL && *f != NULL){
 		NO* node;
-		FILE* fp = fopen("fila.txt", "w");
+		FILE* fp = fopen("../TAD_Fila/fila.txt", "w");
 		if(!fp) return false; //Erro na abertura de arquivo
 
 		while (!fila_vazia(*f)){ //Ficar retirando os valores e colocando no arquivo

@@ -11,13 +11,16 @@ int main(void){
     PACIENTE *p3 = paciente_criar("Maria", 4);
     PACIENTE *p4 = paciente_criar("Luiz", 9);
 
-    registro_inserir(r, p1);
-    registro_inserir(r, p2);
-    registro_inserir(r, p3);
-    registro_inserir(r, p4);
+    //Como o registro inicia vazia não precisa fazer a conferência de ID repetido
+    registro_inserir(r, &p1);
+    registro_inserir(r, &p2);
+    registro_inserir(r, &p3);
+    registro_inserir(r, &p4);
 
     registro_listar(r);
-
+    
+    //É bom o arquivo fila.txt ter alguns dos ID's dos pacientes p1, p2, p3, p4 para o teste rodar corretamente
+    //Lembrnado que não possível 
     FILA *f = fila_carregar(r);
     if(f != NULL) printf("ok!\n");
 
@@ -39,7 +42,7 @@ int main(void){
 
     fila_salvar(&f);
     registro_apagar(&r);
-    if (registro_vazio(r)) printf("vazio, ok!\n");*/
+    if (registro_vazio(r)) printf("vazio, ok!\n");//*/
 
 
     /* TESTES DAS FUNÇÕES DA FILA
@@ -88,20 +91,22 @@ int main(void){
     
     fila_salvar(&f);//*/
 
-    //TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
+    /*TESTE DAS FUNÇÕES FILA_SALVAR E FILA_LISTAR
     FILA* f = fila_criar();
     REGISTRO* r = registro_criar();
-    PACIENTE* p;
+    PACIENTE* p, *aux;
 
-    int id, m, n; scanf("%d", &n);
+    int id, m, n, feedback; scanf("%d", &n);
     char urg, nome[101];
 
-    //Inserções
+    //Inserções 
     for(int i = 0; i < n; i++){
         scanf("%d %c %100[^\n]", &id, &urg, nome);
-        p = paciente_criar(nome, id);
-        registro_inserir(r, p);
-        fila_inserir(f, p, urg);
+        aux = p = paciente_criar(nome, id);
+        feedback = registro_inserir(r, &p);
+        if(!feedback) fila_inserir(f, p, urg);
+        else if(feedback == 1) paciente_apagar(&aux), fila_inserir(f, p, urg);
+        else if(feedback == 2) paciente_apagar(&aux);
         fila_listar(&f);
     }
     registro_listar(r);
