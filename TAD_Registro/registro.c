@@ -335,6 +335,12 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
     *p = node->p; //Guarda o paciente numa variável para retorná-lo depois.
     histor_apagar(&(node->h)); //Apago o histórico do paciente que será removido.
 
+    //A seguir, vamos apagar o arquivo do histórico, para evitar acumulação de arquivos.
+    char file[50];
+    sprintf(file, "../TAD_Historico/proceds/%d.txt", paciente_get_id(*p));
+    remove(file);
+    //Remoção finalizada.
+
     if (node->esq == NULL || node->dir == NULL) { //Tem 1 ou nenhum filho
       
       NO* aux;
