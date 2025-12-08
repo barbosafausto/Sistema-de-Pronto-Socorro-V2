@@ -161,6 +161,11 @@ void histor_consultar(HISTOR *h){
 
     if(h != NULL){
         
+        if(histor_vazio(h)){
+            puts("Esse paciente não possui procedimentos registrados.");
+            return;
+        }
+        puts("Procedimentos: ");
         //Mostra do último ao primeiro procedimento que está no histórico do paciente
         for(int i = h->tam-1; i >= 0; i--){
             printf("%s\n", proced_get_proced(h->proceds[i]));
