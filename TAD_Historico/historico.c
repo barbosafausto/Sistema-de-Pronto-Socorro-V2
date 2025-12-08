@@ -71,9 +71,12 @@ void histor_carregar(HISTOR *h, PACIENTE *p) {
         char nomeArq[101];
         sprintf(nomeArq, "../TAD_Historico/proceds/%d.txt", paciente_get_id(p));
 
+
         //Abrindo arquivo para leitura
         arq = fopen(nomeArq, "r");
         if(arq == NULL){
+            free(aux);
+            aux = NULL;
             return;
         }
 

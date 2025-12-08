@@ -16,7 +16,8 @@ struct registro_ {
 
 struct no_registro {
   
-  PACIENTE* p;
+  PACIENTE *p;
+  HISTOR *h;
   NO* dir;
   NO* esq;
   int altura;
@@ -38,7 +39,7 @@ REGISTRO* registro_criar(void){
   
 }
 
-NO* registro_criar_no(PACIENTE* p){
+NO* registro_criar_no(PACIENTE* p, HISTOR* h){
 
   NO *node = malloc(sizeof(NO));
   if (node == NULL) {
@@ -49,7 +50,9 @@ NO* registro_criar_no(PACIENTE* p){
   node->dir = NULL;
   node->esq = NULL;
   node->altura = 0;
-  
+
+  node->h = h;
+
   return node;
 }
 
@@ -231,20 +234,20 @@ PACIENTE* registro_recuperar(REGISTRO* r, int id) {
 /*===============================================================================*/
 //Funções de inserção de valor
 
-NO* registro_inserir_no(NO* node, PACIENTE** p, char* verifica){
+NO* registro_inserir_no(NO* node, PACIENTE** p, HISTOR **h, char* verifica){
   
   if(node == NULL) { //Chegou no fim da árvore
 
-    NO* novo = registro_criar_no(*p); //Já inicializa a altura como 0
+    NO* novo = registro_criar_no(*p, *h); //Já inicializa a altura como 0
     return novo;
   }
   
   //Organizamos os dados na árvore de acordo com o id dos pacientes
   if (paciente_get_id(node->p) < paciente_get_id(*p)) //Se id maior, insere-se na direita
-    node->dir = registro_inserir_no(node->dir, p, verifica);
+    node->dir = registro_inserir_no(node->dir, p, h, verifica);
 
   else if (paciente_get_id(node->p) > paciente_get_id(*p)) //Se id menor, insere-se na esquerda
-    node->esq = registro_inserir_no(node->esq, p, verifica);
+    node->esq = registro_inserir_no(node->esq, p, h, verifica);
 
   else { //Se tem o mesmo id, não deve ser inserido: ID É ÚNICO
 
@@ -264,11 +267,11 @@ NO* registro_inserir_no(NO* node, PACIENTE** p, char* verifica){
   return registro_balanceia(node);
 }
 
-int_8 registro_inserir(REGISTRO* r, PACIENTE** p){
+int_8 registro_inserir(REGISTRO* r, PACIENTE** p, HISTOR **h){
   
   int_8 verifica = NAO_ESTA;
 
-  if(r != NULL) r->raiz = registro_inserir_no(r->raiz, p, &verifica);
+  if(r != NULL) r->raiz = registro_inserir_no(r->raiz, p, h, &verifica);
   
   return verifica;
 
@@ -290,6 +293,7 @@ NO* troca_max_esq(NO *troca, NO *raiz, PACIENTE** p) {
 
     *p = raiz->p;
     raiz->p = troca->p; 
+    raiz->h = troca->h;
 
     troca->esq = NULL;
     free(troca);
@@ -320,6 +324,7 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
     }
 
     *p = node->p;
+    histor_apagar(&(node->h)); //Apago o histórico do paciente que será removido.
 
     if (node->esq == NULL || node->dir == NULL) { //Tem 1 ou nenhum filho
       
@@ -434,8 +439,13 @@ void registro_salvar_no(NO *raiz) {
   //Fechando arquivo
   fclose(fp);
 
-  //Desalocando tudo
+  //Aqui vamos salvar o histórico.
+  histor_salvar(&(raiz->h), raiz->p);
+
+  //Desalocando paciente
   paciente_apagar(&(raiz->p));
+
+
   free(raiz);
   raiz = NULL;
 
@@ -478,17 +488,25 @@ REGISTRO* registro_carregar(void){
   int id;
   char nome[101];
   PACIENTE* p;
+  HISTOR* h;
   
   while(true){
-    if (fscanf(fp, " %d", &id) == EOF){
+
+    if (fscanf(fp, " %d", &id) == EOF) {
       fclose(fp);
       return r;
+
     }
+
     fscanf(fp, " %100[^\n]", nome);
     fgetc(fp); //Tira o \n
     p = paciente_criar(nome, id);
+
+    h = histor_criar();
+    histor_carregar(h, p); //Carregando o histórico do paciente
+
     
-    registro_inserir(r, &p);
+    registro_inserir(r, &p, &h);
     fgetc(fp); //Ignora o '\n' entre todos os pacientes.
   }
 

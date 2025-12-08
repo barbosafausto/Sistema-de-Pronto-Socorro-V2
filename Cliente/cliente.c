@@ -28,15 +28,18 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
 
   //Criação do paciente
   PACIENTE *p = paciente_criar(nome, id);
+  HISTOR *h = histor_criar();
   PACIENTE *aux = p;
   
   //Se ele estiver na fila, então não haverá inserção
-  int feedback = registro_inserir(r, &p);
+  int feedback = registro_inserir(r, &p, &h);
 
   //Se os pacientes têm nomes distintos, porém com ID repetido, abortamos a operaçõa.
   if (feedback == REPETIDO) {
     
     paciente_apagar(&p);
+    histor_apagar(&h);
+
     aux = NULL;
     return feedback;
   }
@@ -44,6 +47,7 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
   //Se ele está na fila e no registro, não precisamos continuar
   if(feedback == ESTA_FILA){
     paciente_apagar(&aux); //Apagando o paciente criado na linha 19
+    histor_apagar(&h);
     return feedback;
   }
 
@@ -54,6 +58,7 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
   //Se o paciente já está no registro, não precisamos alocar espaço adicional.
   if (feedback == ESTA_REGISTRO){ 
     paciente_apagar(&aux); 
+    histor_apagar(&h);
   }
 
   return feedback;
