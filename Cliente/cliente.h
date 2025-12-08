@@ -22,6 +22,7 @@
     
     void mostrar_fila_de_espera(FILA** f);
     void listar_pacientes(REGISTRO* r);
+    bool mostrar_historico(REGISTRO *r, int id);
 
     bool adicionar_procedimento(REGISTRO *r, int id, char *proced);
     bool desfazer_procedimento(REGISTRO *r, int id);

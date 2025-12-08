@@ -13,15 +13,16 @@ void menu(){
 	puts(" [5] Mostrar Fila de Espera\n");
 	puts(" [6] Dar Alta ao Paciente\n");
 	puts(" [7] Adicionar Procedimento\n");
-	puts( " [8] Desfazer Procedimento\n");
-	puts(" [9] Sair\n");
+	puts(" [8] Desfazer Procedimento\n");
+	puts(" [9] Mostrar Histórico de Paciente\n");
+	puts(" [10] Sair\n");
 	puts("Selecione uma: ");
 }
 
 void urgencias() {
 
 	puts("=-=-=-=-=-URGÊNCIAS-=-=-=-=-=\n");
-  puts("Escolha a urgência deste paciente:\n") ;
+  	puts("Escolha a urgência deste paciente:\n") ;
 
 	puts(" [1] Emergência: caso gravíssimo com risco de morte.\n");
 	puts(" [2] Muito urgente: grave e risco de evoluir para morte.\n");
@@ -205,7 +206,7 @@ int main() {
 
 			
 			case 8:
-				puts("--- Adicionar Procedimento ---\n");
+				puts("--- Desfazer Procedimento ---\n");
 
 				puts("ID do paciente: ");
 
@@ -224,9 +225,21 @@ int main() {
 				break;
 
 
-
-			
 			case 9:
+				puts("--- Mostrar Histórico de Paciente ---\n");
+				
+				puts("ID do paciente: ");
+				
+				while(!scanf(" %d", &id) || id < 1) {
+					
+					getchar();
+				}
+
+				if(!mostrar_historico(r, id)) puts("Por favor, verifique se o paciente está registrado");
+
+				break;
+			
+			case 10:
 				sair(&r, &f);
 				puts("Registros e Fila salvos!\n");
 				break;
@@ -238,7 +251,7 @@ int main() {
 				puts("Operação inválida!\n");
 		}
 
-		if (op == 9) break;
+		if (op == 10) break;
 
 		printf("\n\nPressione enter para continuar...");
 		getchar(); //pega o enter do scanf
