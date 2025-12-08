@@ -234,8 +234,7 @@ Sendo assim, esta função irá dispor na tela:
 
 ☰ `bool mostrar_historico(REGISTRO *r, int id);`
 
-
-descricao aq
+Esta função mostra o histórico de um paciente em específico da ordem do procedimento mais recente ao mais antigo. Retorna `true`, se encontrado o histórico do paciente; caso contário, retorna `false`.
 
 ---
 
