@@ -244,44 +244,59 @@ PACIENTE *fila_remover(FILA *f){
 }
 
 /*===============================================================================*/
-//Função de listar em ordem de prioridade
+//Função de listar fila
+
+void fila_listar_sem_ordem(FILA *f, int i){ //Percorre em pré-ordem
+	if(i < f->final){
+		printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id((f->heap[i])->p), (f->heap[i])->urgencia, ((f->heap[i])->ordem_chegada+1), paciente_get_nome((f->heap[i])->p));
+		fila_listar_sem_ordem(f, esq(i));
+		fila_listar_sem_ordem(f, dir(i));
+	}
+}
 
 void fila_listar(FILA **f){
-	if(f == NULL || *f == NULL) return;
-
-	if(fila_vazia(*f)) {
-		printf("A fila está vazia.\n"); 
+	if(f == NULL || *f == NULL){
+		puts("Erro ao tentar acessar fila na memória."); 
 		return;
 	}
 
-	FILA* aux = (FILA*)malloc(sizeof(FILA));
+	if(fila_vazia(*f)) { //Mensagem específica para o caso da fila estar vazia
+		puts("A fila está vazia."); 
+		return;
+	}
+
+	bool ordem = true; //A impressão será em ordem, ou fora de ordem
+	FILA* aux = (FILA*)malloc(sizeof(FILA)); //Fila auxiliar que receberá os nós em ordem de prioridade
 	NO* node;
 
-	if(aux != NULL){
+	if(aux != NULL){ 
 		aux->contador = 0; //Evita overflow
-		aux->final = 0;
+		aux->final = 0; 
 		aux->tamanho = (*f)->tamanho;
 		aux->heap = (NO**)malloc(sizeof(NO*)*(*f)->tamanho);
-
-		if(aux->heap == NULL){ //Não tem espaço suficiente
-			puts("Não há espaço suficiente para essa operação.");
-			puts("Sugestão: liste o registro e confira os pacientes que estão na fila.");
-			free(aux); return;
+		if(aux->heap == NULL){ //Não tem espaço suficiente para a heap auxiliar
+			free(aux); //Evita memory leak			
+			ordem = false;
 		}
+	}
+	else{ //Não tem espaço suficiente para a estrutura fila auxiliar
+		ordem = false;
+	}
 
-		printf("#     | URGÊNCIA | CHEGADA | NOME\n");
-		while(!fila_vazia(*f)){
+	if(ordem){ //Imprimindo em ordem
+		puts("#     | URGÊNCIA | CHEGADA | NOME");
+		while(!fila_vazia(*f)){ //Desenfileremos f até ela estar sem elementos
 			node = fila_remover_no(*f); //Não apaga o node
 
 			if(node == NULL) continue; //Em caso de erro
-			
-			fila_inserir_no(aux, node); //Não criar um nó, somente referencia o mesmo
-			
+				
+			fila_inserir_no(aux, node); //Não cria um nó, somente referencia o mesmo, evitando maior uso de memória
+				
 			printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id(node->p), node->urgencia, (node->ordem_chegada+1), paciente_get_nome(node->p));
 		}
 
-		aux->contador = (*f)->contador;
-		
+		aux->contador = (*f)->contador; //Para continuar a contagem do ponto em que estava
+			
 		printf("\n");
 
 		free((*f)->heap); //Não tem mais nós no array da heap original
@@ -290,22 +305,19 @@ void fila_listar(FILA **f){
 
 		*f = aux; //Aux tem todas as informações retiradas da heap original
 	}
+
+	else{ //Impressão fora de ordem
+		puts("Não há memória suficiente para impressão em ordem. Impressão fora de ordem: ");
+		puts("#     | URGÊNCIA | CHEGADA | NOME");
+		fila_listar_sem_ordem(*f, 0);
+
+	}
 }
 
 /*===============================================================================*/
 //Funções de carregamento e salvamento
 
 FILA *fila_carregar(REGISTRO* r) {
-
-	/*
-	Os dados foram salvos no formato (Urgência é um caractere):
-	ID
-	Urgência
-
-	ID
-	Urgência
-	...
-	*/
 
 	FILE *fp = fopen("../TAD_Fila/fila.txt", "r");
 	if (!fp) return NULL;
@@ -325,8 +337,8 @@ FILA *fila_carregar(REGISTRO* r) {
 		//Se chegou aqui, é porque encontrou um ID, então vamos buscar o paciente
 		PACIENTE *p = registro_recuperar(r, info);
 
-		//Temos o paciente, então podemos buscar a urgência dele
-		fscanf(fp, "\n%c", &info); //Não há problemas info ser inteiro, o ASCII do valor lido ocupará seu primeiro byte
+		//Temos o paciente, então podemos buscar a urgência dele (Urgência é um caractere)
+		fscanf(fp, "\n%c", &info); //Não há problemas info ser int, o ASCII do valor lido ocupará seu primeiro byte
 
 		if(info != '1' && info != '2' && info != '3' && info != '4' && info != '5') info = '5'; //Se a leitura da urgência falhou, atribuimos a menor urgência, mantendo a prioridade dos pacientes em estado mais crítico
 

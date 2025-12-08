@@ -154,7 +154,7 @@ Esta função é responsável por carregar o registro e a fila dos arquivos salv
     
 🆕 `int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);`
 
-Esta é a função usada para registrar um paciente no sistema. Existem 3 tipos de retornos para esta 
+Esta é a função usada para registrar um paciente no sistema. Existem 5 tipos de retornos para esta 
 função:
 ```C
 /*Paciente novo: não está nem no registro, nem na fila. Será inserido em ambos.*/
@@ -168,6 +168,9 @@ função:
 
 /*Erro: tentativa de inserir um paciente com um ID que já está em uso por outro paciente. Não faremos nada nesse caso.*/
 #define REPETIDO 3
+
+/*Erro: falta de memória para alocação do paciente ou do seu histórico. Não faremos nada nesse caso.*/
+#define ERRO -1
 ```
 
 É por isso que a função registrar_paciente é do tipo `int_8`: 1 byte é suficiente para essa função funcionar, então não precisamos de um inteiro de 4 bytes.
@@ -179,6 +182,8 @@ typedef char int_8
 🔴 `PACIENTE* remover_paciente(REGISTRO* r, int id);`
 
 🆓 `PACIENTE* dar_alta_ao_paciente(FILA* f);`
+
+Esta função é responsável por retirar o paciente de maior prioridade da fila. Retorna esse paciente. Em caso de fila inválida, retornará `NULL`. Esse paciente não é apagado da memória, pois ainda está no registro.
     
 🔍 `PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id);`
 
@@ -186,8 +191,10 @@ Busca por um paciente com ID igual ao passado para a função no registro. Retor
 
     
 ☰ `void mostrar_fila_de_espera(FILA** f);`
+
+Esta função apresenta o nome, ID, urgência e a ordem de chegada dos pacientes que estão na fila. Isso é mostrada na ordem do paciente de maior prioridade para o de menor. Essa operação exige uma memória adicional, se não for possível, ela não será feita. 
   
-☰ `list void listar_pacientes(REGISTRO* r);`
+☰ `void listar_pacientes(REGISTRO* r);`
 
 Esta função é responsável por listar os pacientes que estão registrado. Ela usa a função `registro_listar()` por baixo dos panos.
 
@@ -198,6 +205,10 @@ Sendo assim, esta função irá dispor na tela:
 * O seu histórico de procedimentos.
 
 🆕 `bool adicionar_procedimento(REGISTRO *r, int id, char *proced);`
+
+Esta função é responsável por adicionar um novo procedimento na pilha que representa o histórico de procedimentos de um paciente.
   
 🔴 `bool desfazer_procedimento(REGISTRO *r, int id);`
+
+Esta função é responsável por remover o último procedimento adicionado na pilha que representa o histórico de procedimentos de um paciente.
      

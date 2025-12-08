@@ -1,11 +1,6 @@
 #include "registro.h"
 #include "string.h"
 
-#define REPETIDO 3
-#define ESTA_FILA 2
-#define ESTA_REGISTRO 1
-#define NAO_ESTA 0
-
 #define max(a, b) ((a > b) ? a : b) //Parenteses para não atrapalhar a precedência
 
 typedef struct no_registro NO;
@@ -243,11 +238,13 @@ HISTOR* registro_recuperar_histor(REGISTRO *r, int id) {
 /*===============================================================================*/
 //Funções de inserção de valor
 
-NO* registro_inserir_no(NO* node, PACIENTE** p, HISTOR **h, char* verifica){
+NO* registro_inserir_no(NO* node, PACIENTE** p, HISTOR *h, char* verifica){ //Aqui sabemos que p aponta para um endereço válido, derreferências não causam erro
   
-  if(node == NULL) { //Chegou no fim da árvore
+  if(node == NULL) { //Chegou no local de inserção
 
-    NO* novo = registro_criar_no(*p, *h); //Já inicializa a altura como 0
+    NO* novo = registro_criar_no(*p, h); 
+    if(novo == NULL) (*verifica) = ERRO;
+
     return novo;
   }
   
@@ -276,11 +273,14 @@ NO* registro_inserir_no(NO* node, PACIENTE** p, HISTOR **h, char* verifica){
   return registro_balanceia(node);
 }
 
-int_8 registro_inserir(REGISTRO* r, PACIENTE** p, HISTOR **h){
+int_8 registro_inserir(REGISTRO* r, PACIENTE** p, HISTOR *h){
   
   int_8 verifica = NAO_ESTA;
 
-  if(r != NULL) r->raiz = registro_inserir_no(r->raiz, p, h, &verifica);
+  if(r != NULL){
+    if(p == NULL || *p == NULL || h == NULL) return ERRO;
+    r->raiz = registro_inserir_no(r->raiz, p, h, &verifica);
+  }
   
   return verifica;
 
@@ -381,30 +381,35 @@ PACIENTE* registro_remover(REGISTRO* r, int id) {
 /*===============================================================================*/
 //Funções de listagem de valor
 
-void registro_listar_no(NO* node){ //Percorre em ordem
+void registro_listar_no(NO* node){ //Percorre em ordem de ID
 
   if(node != NULL) {
 
     registro_listar_no(node->esq);
-    char esta_fila = paciente_get_esta_fila(node->p) ? 'S' : 'N';
-    printf("%06d|       %c      | %s\n", paciente_get_id(node->p), esta_fila, paciente_get_nome(node->p)); //Imprime os números de forma alinhada
-    histor_consultar(node->h);
+    char esta_fila = paciente_get_esta_fila(node->p) ? 'S' : 'N'; //S para caso está na fila; N para caso não
+    printf("%06d|       %c      | %s\n", paciente_get_id(node->p), esta_fila, paciente_get_nome(node->p)); //Imprime os valores de forma alinhada
+    histor_consultar(node->h); //Procedimentos:\n proced 1 \n proced 2...
     printf("\n");
     registro_listar_no(node->dir);
   }
 }
 
 void registro_listar(REGISTRO* r){
+
+  if(r == NULL){
+    puts("Erro ao tentar acessar o registro na memória.");
+    return;
+  }
   
-  if (registro_vazio(r)) {
+  if (registro_vazio(r)) { //Mensagem específica para caso o registro estiver vázio
     
-    printf("Não há pacientes registrados.\n");
+    puts("Não há pacientes registrados.");
     return;
   }
 
-  printf("#     | ESTÁ NA FILA | NOME\n");
+  puts("#     | ESTÁ NA FILA | NOME\n");
   registro_listar_no(r->raiz); 
-  printf("\n");
+  putc('\n', stdin); 
 }
 
 
@@ -469,14 +474,6 @@ bool registro_salvar(REGISTRO **r) {
   FILE *fp = fopen("../TAD_Registro/registro.txt", "w");
   fclose(fp);
 
-  /*A lógica de salvamento será:
-  ID
-  Nome
-  
-  ID
-  Nome
-  ...*/
-
   registro_salvar_no((*r)->raiz);
 
   free(*r);
@@ -516,7 +513,7 @@ REGISTRO* registro_carregar(void){
     histor_carregar(h, p); //Carregando o histórico do paciente
 
     
-    registro_inserir(r, &p, &h);
+    registro_inserir(r, &p, h);
     fgetc(fp); //Ignora o '\n' entre todos os pacientes.
   }
 

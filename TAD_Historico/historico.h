@@ -22,7 +22,7 @@
     /*--> OBS1: a função não cria a pilha, somente modifica uma já criada.*/
     void histor_carregar(HISTOR *h, PACIENTE *p);
 
-    /**/
+    /*Apaga todos procedimentos e o próprio histórico*/
     void histor_apagar(HISTOR **h);
     
     /*Recebe um ponteiro de pilha.
