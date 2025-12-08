@@ -30,6 +30,7 @@
 
   //"registro_recuperar_no()" (auxiliar) busca pelo paciente no registro e retorna um nó.
   PACIENTE* registro_recuperar(REGISTRO *r, int id); //*
+  HISTOR* registro_recuperar_histor(REGISTRO *r, int id); //*
   
   //Retorna 0, se teve sucesso na inserção; 1, se o valor já está no registro; 2, se, além do registro, também já estiver na fila
   //Usa registro_inserir_no() como função auxiliar para inserir no local certo.

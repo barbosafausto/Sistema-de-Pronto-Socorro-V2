@@ -90,4 +90,25 @@ void listar_pacientes(REGISTRO* r) {
   registro_listar(r);
 }
 
+bool adicionar_procedimento(REGISTRO *r, int id, char *proced) {
+
+  HISTOR *h = registro_recuperar_histor(r, id);
+
+  if(!h) return false;
+
+  PROCED *p = proced_criar(proced);
+  return histor_inserir(h, p);
+}
+
+bool desfazer_procedimento(REGISTRO *r, int id) {
+
+  HISTOR *h = registro_recuperar_histor(r, id);
+
+  PROCED *p = histor_remover(h);
+  if(!p) return false;
+  
+  proced_apagar(&p);
+  return true;
+}
+
     

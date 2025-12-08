@@ -231,6 +231,15 @@ PACIENTE* registro_recuperar(REGISTRO* r, int id) {
   return paciente->p;
 }
 
+HISTOR* registro_recuperar_histor(REGISTRO *r, int id) {
+
+  NO* paciente = registro_recuperar_no(r->raiz, id);
+
+  if (paciente == NULL) return NULL;
+
+  return paciente->h;
+}
+
 /*===============================================================================*/
 //Funções de inserção de valor
 
