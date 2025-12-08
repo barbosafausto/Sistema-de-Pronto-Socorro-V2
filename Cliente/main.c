@@ -86,6 +86,9 @@ int main() {
 				else if (feedback == REPETIDO)
 				  printf("Erro ao registrar paciente.\nJá existe um paciente com ID %d.\n", id);
 
+				else if(feedback == ERRO)
+					printf("Falta de memória para registrar o paciente com ID %d ou ponteiros inválido.\n", id);
+
 				break;
 
 
@@ -142,11 +145,11 @@ int main() {
 				p = buscar_paciente_por_ID(r, id);
 
 				if (p == NULL){
-				printf("--- Nenhum paciente com o ID %d foi encontrado no registro. ---\n", id);
+					printf("--- Nenhum paciente com o ID %d foi encontrado no registro. ---\n", id);
 				}
 				else {
-				printf("Paciente encontrado.\n");
-				printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); //Imprime os números de forma alinhada
+					printf("Paciente encontrado.\n");
+					printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); //Imprime os números de forma alinhada
 				}
 				
 				break;
@@ -161,20 +164,15 @@ int main() {
 
 				break;
 
-
-
-
-
-
 			case 6:
 				puts("--- Dar Alta ao Paciente ---\n");
 
 				p = dar_alta_ao_paciente(f);
 
-				if (!p) printf("Não foi possível dar alta a um paciente, pois a fila está vazia.\n");
-				else {
-				printf("O seguinte paciente recebeu alta:\n");
-				printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); 
+				if (!p) puts("Não foi possível dar alta a um paciente. Verifique se a fila está vazia.");
+				else { 
+					puts("O seguinte paciente recebeu alta:");
+					printf("%06d | %s\n", paciente_get_id(p), paciente_get_nome(p)); //Paciente não deve ser apagado, pois ainda está no registro.
 				}
 
 				break;

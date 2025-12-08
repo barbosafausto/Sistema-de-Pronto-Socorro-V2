@@ -25,7 +25,7 @@ void sair(REGISTRO** r, FILA** f){ //Deve ser nessa ordem, já que registro_salv
   registro_salvar(r); 
 }
     
-int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia) {
+int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, char urgencia) {
 
   //Criação do paciente e do histórico (necessários se for um paciente novo)
   PACIENTE *p = paciente_criar(nome, id);
@@ -33,7 +33,7 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
   PACIENTE *aux = p; 
   
   //Vamos tentar inseri-lo no registro.
-  int feedback = registro_inserir(r, &p, &h);
+  int feedback = registro_inserir(r, &p, h);
 
   //Se o paciente tem ID igual, porém nome diferente de um paciente registrado, abortamos a operação.
   //Não é permitido repetir ID entre pessoas distintas.
@@ -46,14 +46,14 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
     return feedback;
   }
 
-  //Se ele está na fila e no registro, não precisamos continuar
-  if(feedback == ESTA_FILA){
+  //Se ele está na fila e no registro, não precisamos continuar; se houve erro, também paramos.
+  if(feedback == ESTA_FILA || feedback == ERRO){
     paciente_apagar(&aux); //Apagando o paciente criado
     histor_apagar(&h); //Apagando o histórico cridao
     return feedback;
   }
 
-  //Se chegou aqui, o paciente está no registro ou não.
+  //Se chegou aqui, o paciente já estava no registro ou não.
   //De todo modo, ele será colocado na fila.
   fila_inserir(f, p, urgencia); 
   
@@ -67,7 +67,7 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
 }
 
 PACIENTE* dar_alta_ao_paciente(FILA* f){
-  PACIENTE *p = fila_remover(f);
+  PACIENTE *p = fila_remover(f); //Recebe NULL em caso de fila inválida ou fila vázia
   return p;
 }
   
@@ -83,7 +83,6 @@ PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id){
 }
     
 void mostrar_fila_de_espera(FILA** f){
-
   fila_listar(f); //As conferência estão dentro da função
 }
 
