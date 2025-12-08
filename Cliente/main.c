@@ -13,7 +13,7 @@ void menu(){
 	puts(" [5] Mostrar Fila de Espera\n");
 	puts(" [6] Dar Alta ao Paciente\n");
 	puts(" [7] Adicionar Procedimento\n");
-	puts( " [8] Desfazer Procedimento\n");
+	puts( "[8] Desfazer Procedimento\n");
 	puts(" [9] Sair\n");
 	puts("Selecione uma: ");
 }
