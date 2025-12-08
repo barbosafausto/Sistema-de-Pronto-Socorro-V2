@@ -108,7 +108,7 @@ struct fila {
 };
 ```
 
-O campo contador é essencial para controlar a ordem de chegada dos pacientes, enquanto `final` aponta para o último paciente da heap e `tamanho` guarda a capacidade máxima atual dela.
+O campo contador é essencial para controlar a ordem de chegada dos pacientes, enquanto `final` é o índice do próximo espaço a ser ocupado pela heap e `tamanho` guarda a capacidade máxima atual dela.
 
 
 # 🗃️ Registro
@@ -147,8 +147,9 @@ Uma vez que entendemos as estruturas que compõem o nosso sistema, podemos descr
 
 💾 `bool inicializar(REGISTRO**r, FILA** f);`
 
-Descrição aqui.
-  
+Esta função é responsável por carregar o registro e a fila dos arquivos salvos. Ela retorna "true" caso ambos forem carregados corretamente, e "false" caso contrário. "*r" e "*f" apontarão para as structs criadas por esta função.
+
+
 💾 `void sair(REGISTRO** r, FILA** f);`
     
 🆕 `int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);`
@@ -180,6 +181,9 @@ typedef char int_8
 🆓 `PACIENTE* dar_alta_ao_paciente(FILA* f);`
     
 🔍 `PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id);`
+
+Busca por um paciente com ID igual ao passado para a função no registro. Retorna este paciente, se encontrar, e retorna NULL caso não exista paciente com este ID no sistema.
+
     
 ☰ `void mostrar_fila_de_espera(FILA** f);`
   
