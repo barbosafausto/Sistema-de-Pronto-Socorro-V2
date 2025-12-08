@@ -298,7 +298,7 @@ void fila_listar(FILA **f){
 FILA *fila_carregar(REGISTRO* r) {
 
 	/*
-	Os dados foram salvos PACIENTE formato (Urgência é um ):
+	Os dados foram salvos no formato (Urgência é um caractere):
 	ID
 	Urgência
 
@@ -316,10 +316,11 @@ FILA *fila_carregar(REGISTRO* r) {
 	int info, acao;
 	while (true) {
 
-		acao = fscanf(fp, "%d", &info);
+		//Leiture do ID
+		acao = fscanf(fp, "%d", &info); 
 
-		if (acao == -1) break; //Recebeu EOF
-		if (acao == 0) continue; //Não conseguiu fazer a leitura
+		if (acao == -1) break; //Recebeu EOF, encerra
+		if (acao == 0) continue; //Não conseguiu fazer a leitura, tenta de novo
 
 		//Se chegou aqui, é porque encontrou um ID, então vamos buscar o paciente
 		PACIENTE *p = registro_recuperar(r, info);
@@ -330,7 +331,8 @@ FILA *fila_carregar(REGISTRO* r) {
 		if(info != '1' && info != '2' && info != '3' && info != '4' && info != '5') info = '5'; //Se a leitura da urgência falhou, atribuimos a menor urgência, mantendo a prioridade dos pacientes em estado mais crítico
 
 		//Com isso, fazemos a inserção na fila de prioridade
-		if(p == NULL) continue; //Não insere pacientes com erro na fila
+		if(p == NULL) continue; //Não insere pacientes inválido na fila, embora seja improvável que isso aconteça.
+
 		fila_inserir(f, p, info);
 
 	}

@@ -27,15 +27,16 @@ void sair(REGISTRO** r, FILA** f){ //Deve ser nessa ordem, já que registro_salv
     
 int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia) {
 
-  //Criação do paciente
+  //Criação do paciente e do histórico (necessários se for um paciente novo)
   PACIENTE *p = paciente_criar(nome, id);
   HISTOR *h = histor_criar();
-  PACIENTE *aux = p;
+  PACIENTE *aux = p; 
   
-  //Se ele estiver na fila, então não haverá inserção
+  //Vamos tentar inseri-lo no registro.
   int feedback = registro_inserir(r, &p, &h);
 
-  //Se os pacientes têm nomes distintos, porém com ID repetido, abortamos a operaçõa.
+  //Se o paciente tem ID igual, porém nome diferente de um paciente registrado, abortamos a operação.
+  //Não é permitido repetir ID entre pessoas distintas.
   if (feedback == REPETIDO) {
     
     paciente_apagar(&p);
@@ -47,8 +48,8 @@ int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgenci
 
   //Se ele está na fila e no registro, não precisamos continuar
   if(feedback == ESTA_FILA){
-    paciente_apagar(&aux); //Apagando o paciente criado na linha 19
-    histor_apagar(&h);
+    paciente_apagar(&aux); //Apagando o paciente criado
+    histor_apagar(&h); //Apagando o histórico cridao
     return feedback;
   }
 
