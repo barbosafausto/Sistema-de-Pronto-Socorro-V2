@@ -141,7 +141,7 @@ struct registro_ {
 A estrutura do registro apenas aponta para a raiz da árvore AVL.
 
 
-# Cliente
+# 👤 Cliente
 
 Uma vez que entendemos as estruturas que compõem o nosso sistema, podemos descrever o seu funcionamento esperado. Faremos isso através da descrição das funções do arquivo `Cliente/cliente.c`.
 

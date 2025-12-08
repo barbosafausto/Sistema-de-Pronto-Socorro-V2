@@ -224,11 +224,11 @@ NO* registro_recuperar_no(NO *raiz, int id) {
 
 PACIENTE* registro_recuperar(REGISTRO* r, int id) {
 
-  NO *paciente = registro_recuperar_no(r->raiz, id);
+  NO *paciente = registro_recuperar_no(r->raiz, id); //Recupera o nó deste paciente
 
-  if(paciente == NULL) return NULL;
+  if(paciente == NULL) return NULL; //Se não existir, retorna NULL
   
-  return paciente->p;
+  return paciente->p; //Se existir, retorna o paciente
 }
 
 HISTOR* registro_recuperar_histor(REGISTRO *r, int id) {
@@ -237,7 +237,7 @@ HISTOR* registro_recuperar_histor(REGISTRO *r, int id) {
 
   if (paciente == NULL) return NULL;
 
-  return paciente->h;
+  return paciente->h; //Se existir, retorna o histórico do paciente
 }
 
 /*===============================================================================*/
@@ -292,16 +292,16 @@ int_8 registro_inserir(REGISTRO* r, PACIENTE** p, HISTOR **h){
 NO* troca_max_esq(NO *troca, NO *raiz, PACIENTE** p) {
 
   //printf("Entrando no paciente %d\n", paciente_get_id(troca->p));
-  if (troca->dir) {
+  if (troca->dir) { //Vai até o fim na direita
     troca->dir = troca_max_esq(troca->dir, raiz, p);
   }
 
-  else {
+  else { //Chegou no último
     
     NO* temp = troca->esq;
 
     *p = raiz->p;
-    raiz->p = troca->p; 
+    raiz->p = troca->p;  //Copia paciente e histórico
     raiz->h = troca->h;
 
     troca->esq = NULL;
@@ -310,8 +310,6 @@ NO* troca_max_esq(NO *troca, NO *raiz, PACIENTE** p) {
 
     return temp;
   }
-
-  //printf("Atualmente no nó %d, voltando.\n", paciente_get_id(troca->p));
 
   return registro_balanceia(troca);
 }
@@ -322,8 +320,10 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
 
   int id_no = paciente_get_id(node->p);
 
+  //Recursão para o lado necessário
   if (id < id_no) node->esq = registro_remover_no(node->esq, id, p);
   else if (id > id_no) node->dir = registro_remover_no(node->dir, id, p);
+
   else { //É o nó que deve ser removido
 
     if (paciente_get_esta_fila(node->p)) {
@@ -332,7 +332,7 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
       return node;
     }
 
-    *p = node->p;
+    *p = node->p; //Guarda o paciente numa variável para retorná-lo depois.
     histor_apagar(&(node->h)); //Apago o histórico do paciente que será removido.
 
     if (node->esq == NULL || node->dir == NULL) { //Tem 1 ou nenhum filho
@@ -342,14 +342,13 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
         aux = node->dir;
 
         node->dir = NULL;
-
         free(node);
         node = NULL;
 
         return aux;
       }
 
-      else { //Tem o filho esquerdo
+      else { //Tem possivelmente só o filho esquerdo
         aux = node->esq;
 
         node->esq = NULL;
@@ -360,13 +359,12 @@ NO* registro_remover_no(NO *node, int id, PACIENTE **p) {
       }
     }
 
-    else {
-      //printf("Fazendo a troca a partir do nó %d\n", paciente_get_id(node->p));
-      node->esq = troca_max_esq(node->esq, node, p);
+    else { //Tem dois filhos: trocar com o máximo da esquerda.
+      node->esq = troca_max_esq(node->esq, node, p); 
     }
   }
 
-  return registro_balanceia(node);
+  return registro_balanceia(node); //Retorna balanceado
 }
 
 
