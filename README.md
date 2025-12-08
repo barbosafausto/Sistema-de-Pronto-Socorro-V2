@@ -145,12 +145,26 @@ A estrutura do registro apenas aponta para a raiz da árvore AVL.
 
 Uma vez que entendemos as estruturas que compõem o nosso sistema, podemos descrever o seu funcionamento esperado. Faremos isso através da descrição das funções do arquivo `Cliente/cliente.c`.
 
+---
+
 💾 `bool inicializar(REGISTRO**r, FILA** f);`
 
 Esta função é responsável por carregar o registro e a fila dos arquivos salvos. Ela retorna "true" caso ambos forem carregados corretamente, e "false" caso contrário. "*r" e "*f" apontarão para as structs criadas por esta função.
 
 
+---
+
 💾 `void sair(REGISTRO** r, FILA** f);`
+
+A função de sair lida com o encerramento da sessão do sistema. Para isso ocorrer corretamente, é necessário que os dados da fila e do registro sejam salvos corretamente.
+
+Para cumprir este fim, a função de sair funciona em duas etapas:
+1. Chama a função `fila_salvar`, que apaga os nós da fila e a fila em si; e
+2. Chama a função `registro_salvar`, que faz o mesmo.
+
+Dessas duas funções, somente a do registro desaloca o espaço reservado para os pacientes e seus históricos após salvá-los.
+
+---
     
 🆕 `int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);`
 
@@ -178,21 +192,33 @@ função:
 typedef char int_8
 ```
 
-    
-🔴 `PACIENTE* remover_paciente(REGISTRO* r, int id);`
+---
 
 🆓 `PACIENTE* dar_alta_ao_paciente(FILA* f);`
 
 Esta função é responsável por retirar o paciente de maior prioridade da fila. Retorna esse paciente. Em caso de fila inválida, retornará `NULL`. Esse paciente não é apagado da memória, pois ainda está no registro.
+
+---
+    
+🔴 `PACIENTE* remover_paciente(REGISTRO* r, int id);`
+
+Esta função lida com a remoção de um paciente do registro. Quando isso é feito, todas as informações do paciente são apagadas, incluindo o seu histórico de procedimentos. Isso é feito através da função `registro_remover`.
+
+Essa função só remove um paciente se ele não estiver na fila. Caso ele esteja, a operação de remoção é abortada.
+
+---
     
 🔍 `PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id);`
 
 Busca por um paciente com ID igual ao passado para a função no registro. Retorna este paciente, se encontrar, e retorna NULL caso não exista paciente com este ID no sistema.
 
+---
     
 ☰ `void mostrar_fila_de_espera(FILA** f);`
 
 Esta função apresenta o nome, ID, urgência e a ordem de chegada dos pacientes que estão na fila. Isso é mostrada na ordem do paciente de maior prioridade para o de menor. Essa operação exige uma memória adicional, se não for possível, ela não será feita. 
+
+---
   
 ☰ `void listar_pacientes(REGISTRO* r);`
 
@@ -204,10 +230,22 @@ Sendo assim, esta função irá dispor na tela:
 * Se ele está na fila; e
 * O seu histórico de procedimentos.
 
+---
+
+☰ `bool mostrar_historico(REGISTRO *r, int id);`
+
+
+descricao aq
+
+---
+
 🆕 `bool adicionar_procedimento(REGISTRO *r, int id, char *proced);`
 
 Esta função é responsável por adicionar um novo procedimento na pilha que representa o histórico de procedimentos de um paciente.
   
+
+--- 
+
 🔴 `bool desfazer_procedimento(REGISTRO *r, int id);`
 
 Esta função é responsável por remover o último procedimento adicionado na pilha que representa o histórico de procedimentos de um paciente.
