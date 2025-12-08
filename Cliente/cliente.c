@@ -13,6 +13,7 @@ bool inicializar(REGISTRO** r, FILA** f){
   
   *f = fila_carregar(*r);
   if (*f == NULL){
+    registro_apagar(&r);
     return false;
   }
   
