@@ -75,7 +75,7 @@ void fila_swap_no(NO **a, NO **b){
 /*===============================================================================*/
 //Funções de comparação de prioridades
 
-bool fila_checa_prioridade(NO *a, NO *b){ //Esta função é responsável por detectar qual dos dois nós comparados possui maior prioridade. Ela retorna "true" caso o primeiro nó possui maior prioridade e "false" caso o segundo possuir menor prioridade.
+bool fila_checa_prioridade(NO *a, NO *b){ //Esta função é responsável por detectar qual dos dois nós comparados possui maior prioridade. Ela retorna "true" caso o primeiro nó possui maior prioridade e "false" caso o segundo possuir maior prioridade.
         if (a->urgencia < b->urgencia) return true;
         if (a->urgencia > b->urgencia) return false;
         
@@ -104,7 +104,6 @@ bool fila_cheia_aumentar(FILA *f){ //verifica se a última posição do vetor al
 				  return true; //Retorna verdadeiro caso o realloc falhar. (fila cheia)
 			}
 			
-			//f->tamanho /= 2;
 			f->heap = aux;
 			return false;
 		}
@@ -137,7 +136,7 @@ void fila_fix_up(FILA *f){
 	
 	while((posicao_atual != 0) && fila_checa_prioridade(f->heap[posicao_atual], f->heap[posicao_pai])){
 
-		fila_swap_no(&(f->heap[posicao_atual]), &(f->heap[posicao_pai])); //Enquanto o nó inserido não for a raiz e seu pai tiver menor prioridade, ele é trocado de posição com seu pai.
+		fila_swap_no(&(f->heap[posicao_atual]), &(f->heap[posicao_pai])); //Enquanto o nó inserido não for a raiz e seu pai tiver maior prioridade, ele é trocado de posição com seu pai.
 		posicao_atual = posicao_pai; //Indo para a posição do pai
 		posicao_pai = pai(posicao_atual); //Atualizando o pai
 
@@ -228,7 +227,7 @@ NO* fila_remover_no(FILA* f){ //O mesmo que fila_remover, porém retorna o nó a
 PACIENTE *fila_remover(FILA *f){
 
 	if (!fila_vazia(f)) {
-		PACIENTE *p = f->heap[0]->p; //Sempre se remove a raiz (o primeira da fila)
+		PACIENTE *p = f->heap[0]->p; //Sempre se remove a raiz (o primeiro nó da fila)
 		fila_swap_no(&(f->heap[0]), &(f->heap[f->final-1]));
 		paciente_set_esta_fila(p, false); //Indicando que o paciente não está mais na fila
 		
