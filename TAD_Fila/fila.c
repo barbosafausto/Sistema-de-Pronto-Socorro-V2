@@ -254,21 +254,33 @@ void fila_listar(FILA **f){
 		return;
 	}
 
-	FILA* aux = fila_criar();
+	FILA* aux = (FILA*)malloc(sizeof(FILA));
 	NO* node;
 
 	if(aux != NULL){
+		aux->contador = 0; //Evita overflow
+		aux->final = 0;
+		aux->tamanho = (*f)->tamanho;
+		aux->heap = (NO**)malloc(sizeof(NO*)*(*f)->tamanho);
+
+		if(aux->heap == NULL){ //Não tem espaço suficiente
+			puts("Não há espaço suficiente para essa operação.");
+			puts("Sugestão: liste o registro e confira os pacientes que estão na fila.");
+			free(aux); return;
+		}
+
 		printf("#     | URGÊNCIA | CHEGADA | NOME\n");
 		while(!fila_vazia(*f)){
 			node = fila_remover_no(*f); //Não apaga o node
 
 			if(node == NULL) continue; //Em caso de erro
-
-			fila_cheia_aumentar(aux); //Aumentar o aux se necessário (função fila_inserir_no não faz isso)
-
-			fila_inserir_no(aux, node); //Copia o exato mesmo node para aux
-			printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id(node->p), node->urgencia, node->ordem_chegada+1, paciente_get_nome(node->p));
+			
+			fila_inserir_no(aux, node); //Não criar um nó, somente referencia o mesmo
+			
+			printf("%06d|    %c     |    %dº   |%s\n", paciente_get_id(node->p), node->urgencia, (node->ordem_chegada+1), paciente_get_nome(node->p));
 		}
+
+		aux->contador = (*f)->contador;
 		
 		printf("\n");
 

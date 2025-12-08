@@ -91,6 +91,14 @@ void listar_pacientes(REGISTRO* r) {
   registro_listar(r);
 }
 
+bool mostrar_historico(REGISTRO *r, int id){
+  HISTOR *h = registro_recuperar_histor(r, id);
+  if(h == NULL) return false;
+  
+  histor_consultar(h);
+  return true;
+}
+
 bool adicionar_procedimento(REGISTRO *r, int id, char *proced) {
 
   HISTOR *h = registro_recuperar_histor(r, id);

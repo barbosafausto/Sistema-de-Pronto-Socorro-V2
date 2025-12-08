@@ -387,7 +387,9 @@ void registro_listar_no(NO* node){ //Percorre em ordem
 
     registro_listar_no(node->esq);
     char esta_fila = paciente_get_esta_fila(node->p) ? 'S' : 'N';
-    printf("%06d|       %c      |%s\n", paciente_get_id(node->p), esta_fila, paciente_get_nome(node->p)); //Imprime os números de forma alinhada
+    printf("%06d|       %c      | %s\n", paciente_get_id(node->p), esta_fila, paciente_get_nome(node->p)); //Imprime os números de forma alinhada
+    histor_consultar(node->h);
+    printf("\n");
     registro_listar_no(node->dir);
   }
 }
@@ -400,10 +402,11 @@ void registro_listar(REGISTRO* r){
     return;
   }
 
-  printf("#     | ESTÁ NA FILA |NOME \n");
+  printf("#     | ESTÁ NA FILA | NOME\n");
   registro_listar_no(r->raiz); 
   printf("\n");
 }
+
 
 void registro_imprimir_no_visual(NO *raiz, int nivel) { //Imprime a árvore de forma identada
 
