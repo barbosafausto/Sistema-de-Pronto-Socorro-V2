@@ -3,7 +3,13 @@
 # 🏥 Sistema de Pronto Socorro - Versão 2
 Este projeto, feito apenas em linguagem C, visa implementar algumas funcionalidades de um Sistema de Pronto Socorro por meio da implementação de Tipos Abstratos de Dados (TADs). Nesta versão, temos a implementação de árvores, estrutura que não está presente na versão 1.
 
+
 # 1️⃣ Introdução
+
+## 👥 Grupo
+* 15512767 - José Fausto Vital Barbosa
+* 16862551 - Eduardo Benedini Bueno
+* 16816271 - João Pedro Conde Gomes Alves
 
 ## ⚠️ Como Usar
 
@@ -11,19 +17,70 @@ Este projeto, feito apenas em linguagem C, visa implementar algumas funcionalida
 
 ## ⚙️ Composição
 
-O nosso sistema é composto por três estruturas principais:
+O nosso sistema é composto por 5 estruturas principais:
 
 🔹Pacientes;
 
+🔹Procedimentos;
+
+🔹Histórico de procedimentos;
+
 🔹Registro de pacientes; e
 
-🔹Fila de espera.
+🔹Fila de espera (composta por pacientes).
 
 Todas as operações do nosso sistema são feitas nessas estruturas. A seguir, vamos descrever brevemente a composição delas, visando entender seus funcionamentos.
 
 
 
-# ⏳ Fila
+
+
+# ⚕️ TAD Procedimento
+
+O TAD *Procedimento* define um tipo de dado que será armazenado, posteriormente, no *Histórico* do paciente. Cada paciente tem um *Histórico* composto por *Procedimentos*.
+
+```C
+struct procedimento {
+    char* p;
+};
+```
+
+### 👤 TAD Paciente
+
+O TAD *Paciente* tem uma natureza análoga ao TAD *Procedimento*. Ele será usado na *Fila*.
+
+```C
+struct paciente {
+    char* nome;
+    int id;
+    bool esta_na_fila; 
+}; 
+```
+
+Em outras palavras:
+*  A *Fila* possui um conjunto de *Pacientes*; e
+* O *Histórico* possui um conjunto de *Procedimentos*;
+
+
+
+
+# 🆙 TAD Histórico
+
+O TAD *Histórico* é uma *pilha sequencial estática*, a qual implementa o método LIFO (Last-In First-Out), devido à simplicidade da sua implementação em casos em que o tamanho máximo da pilha está definido e é pequeno, que é o nosso caso. O limite da pilha é de 10 procedimentos por paciente.
+
+Desse modo, o *Histórico* de um paciente é definido por uma struct que possui dois campos. O primeiro campo é um array de procedimentos, enquanto o segundo é o tamanho da pilha, o qual usamos para acessar o seu topo e para verificar se ela está cheia ou vazia.
+
+```C
+struct histor {
+    PROCED *proceds[10];  
+    int tam;
+};
+```
+
+
+
+
+# ⏳ TAD Fila
 TAD responsável por representar uma fila de prioridade no sistema do hospital. Internamente, ela é representada por uma min-heap, uma vez que as condições mais urgentes dos pacientes são dadas por valores inteiros menores.
 
 ## 📦 Structs 
@@ -51,11 +108,11 @@ struct fila {
 };
 ```
 
-O campo contador é essencial para controlar a ordem de chegada dos pacientes, enquant final aponta para o último paciente da heap e tamanho guarda a capacidade máxima atual dela.
+O campo contador é essencial para controlar a ordem de chegada dos pacientes, enquanto `final` aponta para o último paciente da heap e `tamanho` guarda a capacidade máxima atual dela.
 
 
 # 🗃️ Registro
-TAD reponsável por armazenar os dados e cadastros dos pacientes. É organizado como uma árvore do tipo AVL a fim de evitar operações com complexidade linear.
+TAD responsável por armazenar os dados e cadastros dos pacientes. É organizado como uma árvore do tipo AVL, a fim de evitar operações com complexidade linear.
 
 ## Structs
 
@@ -65,14 +122,14 @@ Como a fila, o TAD é composto por duas structs, uma representando o nó da estr
 ```C
 struct no_registro {
   PACIENTE* p;
+  HISTOR *h;
   NO* dir;
   NO* esq;
   int altura;
-  bool esta_na_fila;
 };
 ```
 
-Cada nó do registro aponta para seus filhos esquerdo e direito. Além disso, todo nó tem uma altura e guarda não só o paciente, mas se este paciente está na fila.
+Cada nó do registro aponta para seus filhos esquerdo e direito. Além disso, todo nó tem uma altura e guarda não só o paciente, mas também seu histórico de procedimentos.
 
 ### 🏗️ Estrutura do registro
 ```C
@@ -83,3 +140,30 @@ struct registro_ {
 
 A estrutura do registro apenas aponta para a raiz da árvore AVL.
 
+
+# Cliente
+
+Uma vez que entendemos as estruturas que compõem o nosso sistema, podemos descrever o seu funcionamento esperado. Faremos isso através da descrição das funções do arquivo `Cliente/cliente.c`.
+
+💾 `bool inicializar(REGISTRO**r, FILA** f);`
+
+Descrição aqui.
+  
+💾 `void sair(REGISTRO** r, FILA** f);`
+    
+🆕 `int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);`
+    
+🔴 `PACIENTE* remover_paciente(REGISTRO* r, int id);`
+
+🆓 `PACIENTE* dar_alta_ao_paciente(FILA* f);`
+    
+🔍 `PACIENTE* buscar_paciente_por_ID(REGISTRO* r, int id);`
+    
+☰ `void mostrar_fila_de_espera(FILA** f);`
+  
+☰ `list void listar_pacientes(REGISTRO* r);`
+
+🆕 `bool adicionar_procedimento(REGISTRO *r, int id, char *proced);`
+  
+🔴 `bool desfazer_procedimento(REGISTRO *r, int id);`
+     
