@@ -152,6 +152,28 @@ Descrição aqui.
 💾 `void sair(REGISTRO** r, FILA** f);`
     
 🆕 `int_8 registrar_paciente(REGISTRO *r, FILA *f, int id, char* nome, int_8 urgencia);`
+
+Esta é a função usada para registrar um paciente no sistema. Existem 3 tipos de retornos para esta 
+função:
+```C
+/*Paciente novo: não está nem no registro, nem na fila. Será inserido em ambos.*/
+#define NAO_ESTA 0
+
+/*Paciente antigo: está no registro, mas não está na fila. Será inserido na fila.*/
+#define ESTA_REGISTRO 1
+
+/*Erro: tentativa de inserir um paciente que já está registrado no registro e na fila. Não faremos nada nesse caso.*/
+#define ESTA_FILA 2
+
+/*Erro: tentativa de inserir um paciente com um ID que já está em uso por outro paciente. Não faremos nada nesse caso.*/
+#define REPETIDO 3
+```
+
+É por isso que a função registrar_paciente é do tipo `int_8`: 1 byte é suficiente para essa função funcionar, então não precisamos de um inteiro de 4 bytes.
+```C
+typedef char int_8
+```
+
     
 🔴 `PACIENTE* remover_paciente(REGISTRO* r, int id);`
 
@@ -162,6 +184,14 @@ Descrição aqui.
 ☰ `void mostrar_fila_de_espera(FILA** f);`
   
 ☰ `list void listar_pacientes(REGISTRO* r);`
+
+Esta função é responsável por listar os pacientes que estão registrado. Ela usa a função `registro_listar()` por baixo dos panos.
+
+Sendo assim, esta função irá dispor na tela:
+* O ID do paciente;
+* Seu nome; 
+* Se ele está na fila; e
+* O seu histórico de procedimentos.
 
 🆕 `bool adicionar_procedimento(REGISTRO *r, int id, char *proced);`
   
